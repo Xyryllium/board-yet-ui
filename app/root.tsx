@@ -5,9 +5,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { Navigation } from "./components";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -24,6 +26,9 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
   return (
     <html lang="en">
       <head>
@@ -33,6 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        {!isHomePage && <Navigation />}
         {children}
         <ScrollRestoration />
         <Scripts />

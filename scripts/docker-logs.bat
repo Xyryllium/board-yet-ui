@@ -1,0 +1,3 @@
+@echo off
+echo Viewing Docker logs...
+docker-compose logs -f
