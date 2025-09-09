@@ -159,4 +159,7 @@ export const API_ENDPOINTS = {
     LOGOUT: '/logout',
     REGISTER: '/register',
   },
+  ORGANIZATION: {
+    INVITE: '/organizations/{id}/invite'
+  }
 } as const;

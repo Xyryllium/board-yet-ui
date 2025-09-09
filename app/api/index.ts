@@ -9,5 +9,5 @@ export type {
   LogoutResponse,
   CreateOrganizationData,
   CreateOrganizationResponse,
-  Organization,
+  OrganizationDetails,
 } from './types';
