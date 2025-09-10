@@ -39,13 +39,6 @@ export default function OrganizationDashboard() {
     
     if (userData && userData.organization_id) {
       setOrganizationId(userData.organization_id);
-      console.log('Organization ID found:', userData.organization_id);
-    }
-    
-    if (authToken) {
-      console.log('Auth token found:', authToken);
-    } else {
-      console.log('No auth token found in localStorage');
     }
   }, []);
 
@@ -122,7 +115,7 @@ export default function OrganizationDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="page-container">
       {notification && (
         <Notification
           message={notification.message}
@@ -137,7 +130,7 @@ export default function OrganizationDashboard() {
             description="Manage your organization and invite members"
           />
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid-2-lg">
             <MemberInviteForm 
               onInvite={handleInvite}
               isLoading={isLoading}
@@ -171,6 +164,12 @@ export default function OrganizationDashboard() {
               className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
             >
               View Overview
+            </Link>
+            <Link
+              to="/board-dashboard"
+              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+            >
+              Manage Board
             </Link>
           </div>
         </div>
