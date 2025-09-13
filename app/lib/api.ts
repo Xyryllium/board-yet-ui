@@ -161,5 +161,9 @@ export const API_ENDPOINTS = {
   },
   ORGANIZATION: {
     INVITE: '/organizations/{id}/invite'
+  },
+  BOARD: {
+    LIST: '/boards',
+    CREATE: '/boards'
   }
 } as const;

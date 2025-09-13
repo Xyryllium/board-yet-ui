@@ -63,3 +63,28 @@ export interface InvitationResponse {
   invitation?: Invitation;
   error?: string;
 }
+
+export interface Column {
+  id: number;
+  name: string;
+}
+
+export interface Board {
+  id: number;
+  name: string;
+  description?: string | null;
+  columns: Column[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateBoardData {
+  name: string;
+}
+
+export interface BoardResponse {
+  success: boolean;
+  message?: string;
+  data?: Board | Board[];
+  error?: string;
+}
