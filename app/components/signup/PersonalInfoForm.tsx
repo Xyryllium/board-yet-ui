@@ -82,7 +82,7 @@ function FormFieldComponent({
       <input
         type={field.type}
         id={field.id}
-        className={`form-input ${error ? 'border-red-500' : ''}`}
+        className={`form-input ${error ? 'form-input-error' : ''}`}
         placeholder={field.placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}

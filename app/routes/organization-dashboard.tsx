@@ -166,8 +166,8 @@ export default function OrganizationDashboard() {
               View Overview
             </Link>
             <Link
-              to="/board-dashboard"
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+              to="/boards"
+              className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg font-medium hover:from-emerald-700 hover:to-teal-700 transition-all duration-200"
             >
               Manage Board
             </Link>

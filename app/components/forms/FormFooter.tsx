@@ -5,7 +5,7 @@ interface FormFooterProps {
 
 export function FormFooter({ onSwitchToLogin, className = "" }: FormFooterProps) {
   return (
-    <div className={`text-center ${className}`}>
+    <div className={`text-center-content ${className}`}>
       <p className="text-body-sm">
         Already have an account?{" "}
         <button 
