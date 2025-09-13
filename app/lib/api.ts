@@ -165,5 +165,12 @@ export const API_ENDPOINTS = {
   BOARD: {
     LIST: '/boards',
     CREATE: '/boards'
+  },
+  COLUMN: {
+    CREATE: '/columns',
+    UPDATE: '/columns/{id}',
+    DELETE: '/columns/{id}',
+    REORDER: '/columns/reorder',
+    LIST: '/boards/{boardId}/columns'
   }
 } as const;

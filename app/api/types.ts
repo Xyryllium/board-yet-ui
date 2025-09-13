@@ -67,6 +67,7 @@ export interface InvitationResponse {
 export interface Column {
   id: number;
   name: string;
+  order?: number;
 }
 
 export interface Board {
@@ -82,9 +83,21 @@ export interface CreateBoardData {
   name: string;
 }
 
+export interface CreateColumnData {
+  boardId: number;
+  columns: Column | Column[];
+}
+
 export interface BoardResponse {
   success: boolean;
   message?: string;
   data?: Board | Board[];
+  error?: string;
+}
+
+export interface ColumnResponse {
+  success: boolean;
+  message?: string;
+  data?: Column | Column[];
   error?: string;
 }
