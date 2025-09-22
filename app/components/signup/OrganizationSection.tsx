@@ -1,13 +1,27 @@
+interface OrganizationData {
+  name: string;
+}
+
+interface OrganizationErrors {
+  organizationName?: string;
+}
+
 interface OrganizationSectionProps {
   className?: string;
   createOrganization?: boolean;
   onOrganizationToggle?: (enabled: boolean) => void;
+  organizationData?: OrganizationData;
+  onOrganizationChange?: (field: keyof OrganizationData, value: string) => void;
+  errors?: OrganizationErrors;
 }
 
 export function OrganizationSection({ 
   className = "", 
   createOrganization = false, 
-  onOrganizationToggle 
+  onOrganizationToggle,
+  organizationData = { name: "" },
+  onOrganizationChange,
+  errors = {}
 }: OrganizationSectionProps) {
 
   return (
@@ -43,23 +57,17 @@ export function OrganizationSection({
             <input
               type="text"
               id="orgName"
-              className="form-input"
+              className={`form-input ${errors.organizationName ? 'border-red-500' : ''}`}
               placeholder="Enter organization name"
+              value={organizationData.name}
+              onChange={(e) => onOrganizationChange?.('name', e.target.value)}
               required={createOrganization}
             />
+            {errors.organizationName && (
+              <p className="text-red-500 text-sm mt-1">{errors.organizationName}</p>
+            )}
           </div>
 
-          <div>
-            <label htmlFor="orgDescription" className="form-label">
-              Organization Description
-            </label>
-            <textarea
-              id="orgDescription"
-              rows={3}
-              className="form-textarea"
-              placeholder="Describe your organization's purpose"
-            />
-          </div>
         </div>
       )}
     </div>

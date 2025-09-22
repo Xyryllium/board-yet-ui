@@ -4,16 +4,17 @@ import { LoginFormHeader } from "../login";
 import { LoginFields } from "../login";
 import { SubmitButton } from "../forms";
 import { LoginFormFooter } from "../login";
-import { loginUser, storeAuthToken, type LoginCredentials } from "../../lib/auth";
+import { loginUser, storeAuthToken, storeUserData, type LoginCredentials } from "../../lib/auth";
 
 interface LoginFormProps {
   onSwitchToSignup?: () => void;
+  initialEmail?: string;
 }
 
-export function LoginForm({ onSwitchToSignup }: LoginFormProps) {
+export function LoginForm({ onSwitchToSignup, initialEmail }: LoginFormProps) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: "",
+    email: initialEmail || "",
     password: ""
   });
   const [errors, setErrors] = useState<{
@@ -67,8 +68,9 @@ export function LoginForm({ onSwitchToSignup }: LoginFormProps) {
 
       const response = await loginUser(credentials);
 
-      if (response.success && response.token) {
+      if (response.success && response.token && response.user) {
         storeAuthToken(response.token);
+        storeUserData(response.user);
         navigate("/organization-dashboard");
       } else {
         setErrors({ general: response.error || "Login failed. Please try again." });

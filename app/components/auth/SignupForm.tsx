@@ -5,22 +5,29 @@ import { OrganizationSection } from "../signup";
 import { TermsAgreement } from "../signup";
 import { SubmitButton } from "../forms";
 import { FormFooter } from "../forms";
-import { signupUser, storeAuthToken, type SignupCredentials } from "../../lib/auth";
+import { signupUser, storeAuthToken, storeUserData, type SignupCredentials } from "../../lib/auth";
+import { createOrganization as createOrganizationAPI } from "../../api/organizations/create";
 import { useNavigate } from "react-router";
 
 interface SignupFormProps {
   onSwitchToLogin?: () => void;
+  initialEmail?: string;
+  invitationToken?: string;
 }
 
-export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
+export function SignupForm({ onSwitchToLogin, initialEmail, invitationToken }: SignupFormProps) {
   const navigate = useNavigate();
   const [createOrganization, setCreateOrganization] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
+    email: initialEmail || "",
     password: "",
     confirmPassword: ""
+  });
+
+  const [organizationData, setOrganizationData] = useState({
+    name: ""
   });
 
   const [errors, setErrors] = useState<{
@@ -28,6 +35,7 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
     email?: string;
     password?: string;
     confirmPassword?: string;
+    organizationName?: string;
     general?: string;
   }>({});
 
@@ -56,6 +64,12 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
+    if (createOrganization) {
+      if (!organizationData.name.trim()) {
+        newErrors.organizationName = "Organization name is required";
+      }
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -78,9 +92,32 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
 
       const response = await signupUser(credentials);
 
-      if (response.success && response.token) {
+      if (response.success && response.token && response.user) {
         storeAuthToken(response.token);
-        navigate("/organization-dashboard");
+        storeUserData(response.user);
+        
+        if (createOrganization && organizationData.name.trim()) {
+          try {
+            const orgResponse = await createOrganizationAPI({
+              name: organizationData.name.trim()
+            });
+            
+            if (!orgResponse.success) {
+              setErrors({ general: orgResponse.error || "Failed to create organization. Please try again." });
+              return;
+            }
+          } catch (orgError) {
+            console.error('Organization creation error:', orgError);
+            setErrors({ general: "Account created but failed to create organization. Please try creating it later." });
+            return;
+          }
+        }
+        
+        if (invitationToken) {
+          navigate(`/invitations/accept/${invitationToken}`);
+        } else {
+          navigate("/organization-dashboard");
+        }
       } else {
         if (response.error && response.error.includes('errors')) {
           const errorMessage = response.error;
@@ -100,6 +137,13 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field as keyof typeof errors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const handleOrganizationChange = (field: "name", value: string) => {
+    setOrganizationData(prev => ({ ...prev, [field]: value }));
+    if (errors.organizationName) {
+      setErrors(prev => ({ ...prev, organizationName: undefined }));
     }
   };
 
@@ -126,6 +170,9 @@ export function SignupForm({ onSwitchToLogin }: SignupFormProps) {
         <OrganizationSection 
           createOrganization={createOrganization}
           onOrganizationToggle={setCreateOrganization}
+          organizationData={organizationData}
+          onOrganizationChange={handleOrganizationChange}
+          errors={errors}
         />
 
         <TermsAgreement />

@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home";
 import { AuthForm } from "../components";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,6 +10,12 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') as 'login' | 'signup' | null;
+  const initialEmail = searchParams.get('email');
+  const message = searchParams.get('message');
+  const invitationToken = searchParams.get('invitation_token');
+
   return (
     <div className="page-container">
       <div className="page-content">
@@ -58,7 +64,12 @@ export default function Home() {
             </div>
           </div>
 
-          <AuthForm />
+          <AuthForm 
+            initialTab={initialTab || 'login'} 
+            initialEmail={initialEmail || undefined}
+            showMessage={message || undefined}
+            invitationToken={invitationToken || undefined}
+          />
         </div>
       </div>
     </div>

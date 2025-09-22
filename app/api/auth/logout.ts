@@ -1,5 +1,5 @@
 import { apiClient, API_ENDPOINTS } from '../../lib/api';
-import { clearAuthToken } from '../../lib/auth';
+import { clearAuthToken, clearUserData } from '../../lib/auth';
 import type { LogoutResponse } from '../types';
 import { handleApiResponse, handleApiError } from '../utils';
 
@@ -13,6 +13,7 @@ export async function logoutUser(): Promise<LogoutResponse> {
       response,
       () => {
         clearAuthToken();
+        clearUserData();
         return {
           success: true,
           message: 'Logged out successfully',
