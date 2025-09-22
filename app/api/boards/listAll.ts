@@ -2,11 +2,10 @@ import { apiClient, API_ENDPOINTS } from '../../lib/api';
 import type { Board, BoardResponse } from '../types';
 import { handleApiResponse, handleApiError } from '../utils';
 
-export async function fetchBoard(boardId: number): Promise<BoardResponse> {
+export async function fetchBoards(): Promise<BoardResponse> {
   try {
-    const endpoint = API_ENDPOINTS.BOARD.LIST.replace('{id}', boardId.toString());
     const response = await apiClient.get<{success: boolean, data: Board[], message: string}>(
-      endpoint
+      API_ENDPOINTS.BOARD.LIST_ALL
     );
 
     return handleApiResponse(

@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { createBoard, fetchBoard } from '~/lib/board';
+import { createBoard, fetchBoard, fetchBoards } from '~/lib/board';
 import type { Board } from '~/api/types';
 
 export function useBoards() {
@@ -9,12 +9,12 @@ export function useBoards() {
   const [error, setError] = useState<string | null>(null);
   const hasFetched = useRef(false);
 
-  const fetchBoards = async () => {
+  const fetchAllBoards = async () => {
     setIsLoading(true);
     setError(null);
     
     try {
-      const response = await fetchBoard();
+      const response = await fetchBoards();
       
       if (response.success && response.data) {
         const boardsArray = Array.isArray(response.data) ? response.data : [response.data];
@@ -28,6 +28,26 @@ export function useBoards() {
       setIsLoading(false);
     }
   };
+
+  const fetchSpecificBoard = async (boardId: number) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetchBoard(boardId);
+      
+      if (response.success && response.data) {
+        const boardsArray = Array.isArray(response.data) ? response.data : [response.data];
+        setBoards(boardsArray);
+      } else {
+        setError(response.error || 'Failed to fetch boards');
+      }
+    } catch (error) {
+      setError('An error occurred while fetching boards');
+    } finally {
+      setIsLoading(false);
+    }
+  }; 
 
   const createNewBoard = async (boardName: string) => {
     setIsCreating(true);
@@ -69,9 +89,11 @@ export function useBoards() {
     error,
     hasFetched: hasFetched.current,
     setHasFetched: (value: boolean) => { hasFetched.current = value; },
-    fetchBoards,
+    fetchAllBoards,
     createNewBoard,
     updateBoard,
-    clearError
+    fetchSpecificBoard,
+    clearError,
+    setError
   };
 }

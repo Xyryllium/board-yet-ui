@@ -109,7 +109,7 @@ export function useBoardManagement() {
     totalBoards: pagination.totalItems,
     
     // Actions
-    fetchBoards: boardsHook.fetchBoards,
+    fetchAllBoards: boardsHook.fetchAllBoards,
     setHasFetched: boardsHook.setHasFetched,
     handleCreateBoard,
     handleAddColumns,

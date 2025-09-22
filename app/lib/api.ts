@@ -160,11 +160,15 @@ export const API_ENDPOINTS = {
     REGISTER: '/register',
   },
   ORGANIZATION: {
-    INVITE: '/organizations/{id}/invite'
+    CREATE: '/organizations',
+    INVITE: '/organizations/{id}/invite',
+    ACCEPT_INVITATION: '/organizations/invitations/accept',
+    LIST: '/organizations/invitations/details/{token}'
   },
   BOARD: {
-    LIST: '/boards',
-    CREATE: '/boards'
+    LIST_ALL: '/boards',
+    CREATE: '/boards',
+    LIST: '/boards/{id}',
   },
   COLUMN: {
     CREATE: '/columns',
@@ -172,5 +176,11 @@ export const API_ENDPOINTS = {
     DELETE: '/columns/{id}',
     REORDER: '/columns/reorder',
     LIST: '/boards/{boardId}/columns'
+  },
+  TASK: {
+    CREATE: '/columns/{columnId}/cards',
+    UPDATE: '/cards/{id}',
+    DELETE: '/cards/{id}',
+    LIST: '/columns/{columnId}/cards'
   }
 } as const;
