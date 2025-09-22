@@ -2,8 +2,8 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  role: string;
-  organization_id: number;
+  role?: string;
+  organization_id?: number;
 }
 
 export interface AuthResponse {
@@ -25,17 +25,23 @@ export interface CreateOrganizationData {
 }
 
 export interface OrganizationDetails {
-  id: string;
+  id: number;
   name: string;
-  description?: string;
-  createdAt: string;
-  updatedAt: string;
-  ownerId: string;
+  owner?: User;
+  createdAt?: string;
+  updatedAt?: string;
+  ownerId?: number;
 }
 
 export interface CreateOrganizationResponse {
   success: boolean;
   organization?: OrganizationDetails;
+  error?: string;
+}
+
+export interface OrganizationDetailsResponse {
+  success: boolean;
+  data?: OrganizationDetails;
   error?: string;
 }
 
@@ -57,17 +63,30 @@ export interface Invitation {
   };
 }
 
+export interface Card {
+  id: number;
+  title?: string;
+  name?: string;
+  description?: string;
+  order?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface InvitationResponse {
   success: boolean;
   message?: string;
   invitation?: Invitation;
   error?: string;
+  status?: string;
+  email?: string;
 }
 
 export interface Column {
   id: number;
   name: string;
   order?: number;
+  cards?: Card[];
 }
 
 export interface Board {
@@ -100,4 +119,38 @@ export interface ColumnResponse {
   message?: string;
   data?: Column | Column[];
   error?: string;
+}
+
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  columnId: number;
+  order?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CreateTaskData {
+  title: string;
+  description?: string;
+  columnId: number;
+  order?: number;
+}
+
+export interface TaskResponse {
+  success: boolean;
+  message?: string;
+  data?: Task;
+  error?: string;
+}
+
+export interface TaskApiResponse {
+  id: number;
+  column_id: number;
+  title: string;
+  description?: string;
+  order?: number;
+  created_at?: string;
+  updated_at?: string;
 }

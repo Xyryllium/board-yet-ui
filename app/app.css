@@ -213,6 +213,10 @@ body {
   @apply text-sm text-gray-600 dark:text-gray-400;
 }
 
+.text-body-stat {
+  @apply font-semibold text-gray-900 dark:text-white;
+}
+
 .text-muted {
   @apply text-gray-500 dark:text-gray-400;
 }
@@ -483,6 +487,10 @@ body {
 
 .space-vertical-lg {
   @apply space-y-6;
+}
+
+.invitation-icon {
+  @apply w-20 h-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mx-auto flex items-center justify-center;
 }
 
 .btn-icon {
