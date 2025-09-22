@@ -27,7 +27,7 @@ export function LoginFields({
         <input
           type="email"
           id="email"
-          className={`form-input ${errors.email ? 'border-red-500' : ''}`}
+          className={`form-input ${errors.email ? 'form-input-error' : ''}`}
           placeholder="Enter your email"
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
@@ -45,7 +45,7 @@ export function LoginFields({
         <input
           type="password"
           id="password"
-          className={`form-input ${errors.password ? 'border-red-500' : ''}`}
+          className={`form-input ${errors.password ? 'form-input-error' : ''}`}
           placeholder="Enter your password"
           value={password}
           onChange={(e) => onPasswordChange(e.target.value)}

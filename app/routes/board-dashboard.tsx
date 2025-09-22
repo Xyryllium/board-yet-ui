@@ -26,7 +26,7 @@ export default function BoardDashboard() {
         isCreating,
         error,
         hasFetched,
-        fetchBoards,
+        fetchAllBoards,
         setHasFetched,
         handleCreateBoard,
         handleAddColumns,
@@ -41,8 +41,8 @@ export default function BoardDashboard() {
         if (!isInitialized || hasFetched) return;
         
         setHasFetched(true);
-        fetchBoards();
-    }, [isInitialized, hasFetched, setHasFetched, fetchBoards]);
+        fetchAllBoards();
+    }, [isInitialized, hasFetched, setHasFetched, fetchAllBoards]);
 
     if (isLoading) {
         return (

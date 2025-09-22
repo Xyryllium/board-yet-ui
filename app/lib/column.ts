@@ -1,5 +1,5 @@
 import type { BoardResponse, ColumnResponse, CreateColumnData } from "~/api/types";
-import { fetchBoards as apiFetchBoards } from "~/api/boards/list";
+import { fetchBoards as apiFetchBoards } from "~/api/boards/listAll";
 import { createColumn as apiCreateColumn } from "~/api/columns/create";
 import { updateColumn as apiUpdateColumn } from "~/api/columns/update";
 import { deleteColumn as apiDeleteColumn } from "~/api/columns/delete";
