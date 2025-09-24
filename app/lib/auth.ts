@@ -33,6 +33,7 @@ export interface ApiError {
 
 import { loginUser as apiLoginUser } from '../api/auth/login';
 import { signupUser as apiSignupUser } from '../api/auth/signup';
+import { logoutUser as apiLogoutUser } from '../api/auth/logout';
 
 export async function loginUser(credentials: LoginCredentials): Promise<AuthResponse> {
   return apiLoginUser(credentials);
@@ -40,6 +41,10 @@ export async function loginUser(credentials: LoginCredentials): Promise<AuthResp
 
 export async function signupUser(credentials: SignupCredentials): Promise<AuthResponse> {
   return apiSignupUser(credentials);
+}
+
+export async function logoutUser() {
+  return apiLogoutUser();
 }
 
 export function storeAuthToken(token: string) {

@@ -165,6 +165,9 @@ export const API_ENDPOINTS = {
     ACCEPT_INVITATION: '/organizations/invitations/accept',
     LIST: '/organizations/invitations/details/{token}'
   },
+  USER: {
+    LIST: '/users/{organizationId}/members',
+  },
   BOARD: {
     LIST_ALL: '/boards',
     CREATE: '/boards',

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Route } from "./+types/email-invitation";
 import { useNavigate } from "react-router";
 import { acceptInvitation, listOrganizationDetails } from "~/lib/member";
+import { getUserData, storeUserData } from "~/lib/auth";
 import type { OrganizationDetails } from "~/api";
 import { formatIconText } from "~/lib/stringUtils";
 
@@ -33,6 +34,28 @@ export default function EmailInvitation({params}: Route.ComponentProps) {
         const url = `/?tab=signup&email=${encodeURIComponent(email)}&message=${encodeURIComponent(message)}&invitation_token=${encodeURIComponent(token)}`;
         navigate(url);
       } else if (response.success) {
+        const currentUserData = getUserData();
+        
+        if (currentUserData) {
+          let updatedUserData = { ...currentUserData };
+
+          if (response.invitation) {
+            updatedUserData.organization_id = response.invitation.organization_id;
+            updatedUserData.role = response.invitation.role;
+          }
+
+          if (!updatedUserData.organization_id && organization) {
+            updatedUserData.organization_id = organization.id;
+            updatedUserData.role = 'member';
+          }
+
+          if (!updatedUserData.organization_id) {
+            console.warn('No organization ID found in invitation response or page data');
+          }
+
+          storeUserData(updatedUserData);
+        }
+        
         setSuccess(true);
         navigate("/boards");
       } else {
