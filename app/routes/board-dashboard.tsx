@@ -6,6 +6,7 @@ import { BoardForm, BoardList } from "~/components/board";
 import { ErrorAlert, LoadingSpinner, CreatingIndicator } from "~/components/ui";
 import { useAuth } from "~/hooks/useAuth";
 import { useBoardManagement } from "~/hooks/useBoardManagement";
+import { isAdmin } from "~/lib/auth";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -16,6 +17,7 @@ export function meta({}: Route.MetaArgs) {
 
 export default function BoardDashboard() {
     const { isInitialized } = useAuth();
+    const isUserAdmin = isAdmin();
     const {
         boards,
         paginatedBoards,
@@ -62,14 +64,16 @@ export default function BoardDashboard() {
 
                 <ErrorAlert error={error} onDismiss={clearError} />
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div className="order-2 lg:order-1">
-                        <BoardForm
-                            onCreate={handleCreateBoard}
-                            isLoading={isCreating}
-                        />
-                    </div>
-                    <div className="order-1 lg:order-2 relative">
+                <div className={`grid grid-cols-1 gap-8 ${isUserAdmin ? 'lg:grid-cols-2' : 'w-full'}`}>
+                    {isUserAdmin && (
+                        <div className="order-2 lg:order-1">
+                            <BoardForm
+                                onCreate={handleCreateBoard}
+                                isLoading={isCreating}
+                            />
+                        </div>
+                    )}
+                    <div className={`order-1 relative ${isUserAdmin ? 'lg:order-2' : 'w-full'}`}>
                         <CreatingIndicator isVisible={isCreating} />
                         <BoardList
                             boards={paginatedBoards}
@@ -86,14 +90,16 @@ export default function BoardDashboard() {
                     </div>
                 </div>
 
-                <div className="mt-8 flex justify-center space-x-4">
-                    <Link
-                        to="/organization-dashboard"
-                        className="btn-primary-lg"
-                    >
-                        Back to Organization
-                    </Link>
-                </div>
+                {isUserAdmin && (
+                    <div className="mt-8 flex justify-center space-x-4">
+                        <Link
+                            to="/organization-dashboard"
+                            className="btn-primary-lg"
+                        >
+                            Back to Organization
+                        </Link>
+                    </div>
+                )}
             </div>
         </div>
     );

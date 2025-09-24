@@ -21,12 +21,6 @@ export default function OrganizationOverview() {
     
     setToken(authToken);
     setIsAuth(authenticated);
-    
-    if (authToken) {
-      console.log('Auth token found:', authToken);
-    } else {
-      console.log('No auth token found in localStorage');
-    }
   }, []);
 
   if (!isAuth) {
@@ -57,10 +51,6 @@ export default function OrganizationOverview() {
             <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="heading-4">Members</h2>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                  <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
-                </div>
               </div>
 
               <div className="space-y-4">
@@ -102,15 +92,6 @@ export default function OrganizationOverview() {
                     You
                   </span>
                 </div>
-              </div>
-
-              <div className="mt-6">
-                <Link 
-                  to="/invite-members"
-                  className="block w-full btn-primary text-center"
-                >
-                  Invite New Member
-                </Link>
               </div>
             </div>
 

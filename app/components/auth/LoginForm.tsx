@@ -71,7 +71,10 @@ export function LoginForm({ onSwitchToSignup, initialEmail }: LoginFormProps) {
       if (response.success && response.token && response.user) {
         storeAuthToken(response.token);
         storeUserData(response.user);
-        navigate("/organization-dashboard");
+        if(response.user.role === 'admin')
+          navigate("/organization-dashboard");
+        else
+          navigate("/boards");
       } else {
         setErrors({ general: response.error || "Login failed. Please try again." });
       }

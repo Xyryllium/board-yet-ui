@@ -1,12 +1,14 @@
 import type { Route } from "./+types/organization-dashboard";
 import { Link } from "react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { getAuthToken, isAuthenticated, getUserData } from "../lib/auth";
 import { AuthRequired } from "../components/auth";
 import { DashboardHeader } from "~/components/dashboard/DashboardHeader";
 import { MemberInviteForm } from "~/components/dashboard/MemberInviteForm";
-import { inviteMember, type Member } from "~/lib/member";
+import { fetchAllMembers, inviteMember} from "~/lib/member";
 import { Notification } from "~/components/ui/Notification";
+import { formatIconText } from "~/lib/stringUtils";
+import type { Member } from "~/api/types";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -16,31 +18,58 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function OrganizationDashboard() {
-  const [isAuth, setIsAuth] = useState<boolean>(false);
-  const [token, setToken] = useState<string | null>(null);
+  const userData = getUserData();
+  const [isAuth, setIsAuth] = useState<boolean>(() => isAuthenticated());
+  const [token, setToken] = useState<string | null>(() => getAuthToken());
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [organizationId, setOrganizationId] = useState<number | null>(null);
+  const [isInitializing, setIsInitializing] = useState<boolean>(true);
+  const [organizationId, setOrganizationId] = useState<number | null>(userData?.organization_id || null);
   const [notification, setNotification] = useState<{
     message: string;
     type: 'success' | 'error' | 'info';
   } | null>(null);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [userInitials, setUserInitials] = useState<string>(() => {
+    return userData?.name ? formatIconText(userData.name) : 'Y';
+  });
+  const hasFetchedMembers = useRef(false);
 
   const clearNotification = () => {
     setNotification(null);
   };
 
-  useEffect(() => {
-    const authToken = getAuthToken();
-    const authenticated = isAuthenticated();
-    const userData = getUserData();
+  const fetchMembers = useCallback(async (organizationId: number) => {
+    if (organizationId === 0) {
+      setMembers([]);
+      return;
+    }
     
-    setToken(authToken);
-    setIsAuth(authenticated);
-    
-    if (userData && userData.organization_id) {
-      setOrganizationId(userData.organization_id);
+    try {
+      const response = await fetchAllMembers(organizationId);
+      if (response.success && response.members) {
+        setMembers(response.members);
+      } else {  
+        setMembers([]);
+        console.error('Failed to fetch members:', response.error);
+      }
+    } catch (error) {
+      console.error('Error fetching members:', error);
+      setMembers([]);
     }
   }, []);
+
+  useEffect(() => {
+    setIsInitializing(false);
+    
+    if (hasFetchedMembers.current) {
+      return;
+    }
+    
+    if (userData && userData.organization_id) {
+      fetchMembers(userData.organization_id);
+      hasFetchedMembers.current = true;
+    }
+  }, [fetchMembers, userData]);
 
   const sendInvitation = async (email: string, role: string): Promise<boolean> => {
     if (!organizationId) {
@@ -103,6 +132,17 @@ export default function OrganizationDashboard() {
     }
   };
 
+  if (isInitializing) {
+    return (
+      <div className="page-container flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!isAuth) {
     return (
       <AuthRequired
@@ -140,31 +180,49 @@ export default function OrganizationDashboard() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Current Members</h2>
               
               <div className="space-y-4">
-                <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-                    Y
+
+                {userData && (
+                  <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                      { userInitials }
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white capitalize">You ({userData.role})</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{userData.email}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">You (Admin)</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">you@example.com</p>
-                  </div>
-                </div>
+                )}
                 
-                <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                  <p>No other members yet</p>
-                  <p className="text-sm">Invite members to get started</p>
-                </div>
+                { members.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <p>No other members yet</p>
+                    <p className="text-sm">Invite members to get started</p>
+                  </div>
+                ): (
+                  members.map((member) => (
+                    <div key={member.id} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                      <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+                        { member.name ? formatIconText(member.name) : 'M' }
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white capitalize">{member.name} ({member.role})</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{member.email}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+
               </div>
             </div>
           </div>
 
           <div className="mt-8 flex justify-center space-x-4">
-            <Link
+            {/* <Link
               to="/organization-overview"
               className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
             >
               View Overview
-            </Link>
+            </Link> */}
             <Link
               to="/boards"
               className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg font-medium hover:from-emerald-700 hover:to-teal-700 transition-all duration-200"
