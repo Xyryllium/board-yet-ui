@@ -20,8 +20,8 @@ interface BoardContentProps {
 }
 
 const BOARD_STYLES = {
-    container: "bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden flex-1 flex flex-col",
-    content: "p-6 flex-1 flex flex-col"
+    container: "bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden flex-1 flex flex-col w-full",
+    content: "p-4 sm:p-6 flex-1 flex flex-col min-h-0"
 } as const;
 
 export function BoardContent({
