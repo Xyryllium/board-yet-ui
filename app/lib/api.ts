@@ -15,6 +15,7 @@ export interface ApiError {
 
 class ApiClient {
   private baseURL: string;
+  private authToken: string | null = null;
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
@@ -24,7 +25,9 @@ class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
-    const url = `${this.baseURL}${endpoint}`;
+    const baseURL = this.baseURL.endsWith('/') ? this.baseURL.slice(0, -1) : this.baseURL;
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const url = `${baseURL}${cleanEndpoint}`;
     
     const defaultHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -32,9 +35,10 @@ class ApiClient {
       'X-App-Version': appConfig.app.version,
     };
 
-    const token = this.getAuthToken();
-    if (token) {
-      defaultHeaders['Authorization'] = `Bearer ${token}`;
+    const currentToken = this.authToken || (typeof window !== 'undefined' ? localStorage.getItem('board_yet_auth_token') : null);
+    
+    if (currentToken) {
+      defaultHeaders['Authorization'] = `Bearer ${currentToken}`;
     }
 
     const requestConfig: RequestInit = {
@@ -45,22 +49,19 @@ class ApiClient {
       },
     };
 
-    if (appConfig.app.debug) {
-      console.log(`API Request: ${options.method || 'GET'} ${url}`, {
-        headers: defaultHeaders,
-        body: options.body
-      });
-    }
-
     try {
       const response = await fetch(url, requestConfig);
       
-      if (appConfig.app.debug) {
-        console.log(`API Response: ${response.status} ${response.statusText}`, {
-          url,
-          status: response.status,
-          ok: response.ok
+      if (response.status === 401 && this.authToken) {
+        this.clearAuthToken();
+        
+        import('../lib/auth').then(({ clearAuthToken }) => {
+          clearAuthToken();
         });
+        
+        if (typeof window !== 'undefined' && window.location.pathname !== '/') {
+          window.location.href = '/';
+        }
       }
 
       const data = await response.json();
@@ -124,8 +125,16 @@ class ApiClient {
     }
   }
 
-  private getAuthToken(): string | null {
-    return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+  setAuthToken(token: string | null) {
+    this.authToken = token;
+  }
+
+  getAuthToken(): string | null {
+    return this.authToken;
+  }
+
+  clearAuthToken() {
+    this.authToken = null;
   }
 
   async get<T>(endpoint: string): Promise<ApiResponse<T>> {
@@ -158,9 +167,14 @@ export const API_ENDPOINTS = {
     LOGIN: '/login',
     LOGOUT: '/logout',
     REGISTER: '/register',
+    ME: '/auth/me',
   },
   ORGANIZATION: {
     CREATE: '/organizations',
+    GET_BY_SUBDOMAIN: '/organizations/subdomain/{subdomain}',
+    GET_SETTINGS: '/organizations/{id}/settings',
+    UPDATE_SETTINGS: '/organizations/{id}/settings',
+    VALIDATE_SUBDOMAIN: '/organizations/subdomain/validate',
     INVITE: '/organizations/{id}/invite',
     ACCEPT_INVITATION: '/organizations/invitations/accept',
     LIST: '/organizations/invitations/details/{token}'

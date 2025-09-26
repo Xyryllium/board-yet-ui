@@ -4,7 +4,8 @@ import { LoginFormHeader } from "../login";
 import { LoginFields } from "../login";
 import { SubmitButton } from "../forms";
 import { LoginFormFooter } from "../login";
-import { loginUser, storeAuthToken, storeUserData, type LoginCredentials } from "../../lib/auth";
+import { loginUser, type LoginCredentials } from "../../lib/auth";
+import { redirectToUserOrganization } from "../../lib/tenancy";
 
 interface LoginFormProps {
   onSwitchToSignup?: () => void;
@@ -68,13 +69,18 @@ export function LoginForm({ onSwitchToSignup, initialEmail }: LoginFormProps) {
 
       const response = await loginUser(credentials);
 
-      if (response.success && response.token && response.user) {
-        storeAuthToken(response.token);
-        storeUserData(response.user);
-        if(response.user.role === 'admin')
-          navigate("/organization-dashboard");
-        else
-          navigate("/boards");
+      if (response.success && response.user) {
+        const userSubdomain = response.user.subdomain;
+        
+        if (userSubdomain) {
+          const path = response.user.role === 'admin' ? '/tenant/' : '/tenant/boards';
+          redirectToUserOrganization(userSubdomain, path);
+        } else {
+          if(response.user.role === 'admin')
+            navigate("/tenant/");
+          else
+            navigate("/tenant/boards");
+        }
       } else {
         setErrors({ general: response.error || "Login failed. Please try again." });
       }
