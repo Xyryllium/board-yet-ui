@@ -10,6 +10,8 @@ import {
 
 import type { Route } from "./+types/root";
 import { Navigation } from "./components";
+import { useOrganizationRedirect } from "./hooks/useOrganizationRedirect";
+import { UserProvider } from "./contexts/UserContext";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -25,10 +27,24 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-export function Layout({ children }: { children: React.ReactNode }) {
+function LayoutContent({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
+  const isTenantRoute = location.pathname.startsWith("/tenant");
 
+  if (!isTenantRoute) {
+    useOrganizationRedirect();
+  }
+
+  return (
+    <>
+      {!isHomePage && !isTenantRoute && <Navigation />}
+      {children}
+    </>
+  );
+}
+
+export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -38,8 +54,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {!isHomePage && <Navigation />}
-        {children}
+        <UserProvider>
+          <LayoutContent>{children}</LayoutContent>
+        </UserProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

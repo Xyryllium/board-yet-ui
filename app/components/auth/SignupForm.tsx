@@ -5,8 +5,9 @@ import { OrganizationSection } from "../signup";
 import { TermsAgreement } from "../signup";
 import { SubmitButton } from "../forms";
 import { FormFooter } from "../forms";
-import { signupUser, storeAuthToken, storeUserData, type SignupCredentials } from "../../lib/auth";
+import { signupUser, type SignupCredentials } from "../../lib/auth";
 import { createOrganization as createOrganizationAPI } from "../../api/organizations/create";
+import { generateSubdomainFromName } from "../../lib/tenancy";
 import { useNavigate } from "react-router";
 
 interface SignupFormProps {
@@ -93,13 +94,34 @@ export function SignupForm({ onSwitchToLogin, initialEmail, invitationToken }: S
       const response = await signupUser(credentials);
 
       if (response.success && response.token && response.user) {
-        storeAuthToken(response.token);
-        storeUserData(response.user);
         
         if (createOrganization && organizationData.name.trim()) {
           try {
+            const subdomain = generateSubdomainFromName(organizationData.name.trim());
+            
             const orgResponse = await createOrganizationAPI({
-              name: organizationData.name.trim()
+              name: organizationData.name.trim(),
+              subdomain: subdomain,
+              settings: {
+                theme: {
+                  primaryColor: '#8b5cf6',
+                  logo: undefined,
+                  customCss: undefined,
+                },
+                // TODO: Add more organization settings as needed, for now we keep it simple
+                // e.g., billing info, plan type, features, etc.
+                // features: {
+                //   allowGuestAccess: false,
+                //   maxBoards: 10,
+                //   maxMembers: 50,
+                //   allowFileUploads: true,
+                // },
+                branding: {
+                  companyName: organizationData.name.trim(),
+                  supportEmail: formData.email.trim(),
+                  customDomain: undefined,
+                },
+              }
             });
             
             if (!orgResponse.success) {
@@ -114,9 +136,23 @@ export function SignupForm({ onSwitchToLogin, initialEmail, invitationToken }: S
         }
         
         if (invitationToken) {
-          navigate(`/invitations/accept/${invitationToken}`);
+          try {
+            const { acceptInvitation } = await import('../../lib/member');
+            const invitationResponse = await acceptInvitation(invitationToken);
+            
+            if (invitationResponse.success) {
+              const userSubdomain = response.user?.subdomain || 'team-stark';
+              const { redirectToUserOrganization } = await import('../../lib/tenancy');
+              redirectToUserOrganization(userSubdomain, '/tenant/boards');
+            } else {
+              navigate("/tenant/");
+            }
+          } catch (error) {
+            console.error('Failed to accept invitation after signup:', error);
+            navigate("/tenant/");
+          }
         } else {
-          navigate("/organization-dashboard");
+          navigate("/tenant/");
         }
       } else {
         if (response.error && response.error.includes('errors')) {

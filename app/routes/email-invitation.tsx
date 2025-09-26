@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { Route } from "./+types/email-invitation";
 import { useNavigate } from "react-router";
 import { acceptInvitation, listOrganizationDetails } from "~/lib/member";
-import { getUserData, storeUserData } from "~/lib/auth";
+import { getCurrentUser } from "~/lib/auth";
 import type { OrganizationDetails } from "~/api";
 import { formatIconText } from "~/lib/stringUtils";
 
@@ -26,6 +26,9 @@ export default function EmailInvitation({params}: Route.ComponentProps) {
   const handleAcceptInvitation = async () => {
     try {
       setIsLoading(true);
+      setError(null);
+      const currentUser = await getCurrentUser();
+      
       const response = await acceptInvitation(token);
       
       if (response.success && response.status === 'user_not_registered') {
@@ -34,35 +37,20 @@ export default function EmailInvitation({params}: Route.ComponentProps) {
         const url = `/?tab=signup&email=${encodeURIComponent(email)}&message=${encodeURIComponent(message)}&invitation_token=${encodeURIComponent(token)}`;
         navigate(url);
       } else if (response.success) {
-        const currentUserData = getUserData();
-        
-        if (currentUserData) {
-          let updatedUserData = { ...currentUserData };
-
-          if (response.invitation) {
-            updatedUserData.organization_id = response.invitation.organization_id;
-            updatedUserData.role = response.invitation.role;
-          }
-
-          if (!updatedUserData.organization_id && organization) {
-            updatedUserData.organization_id = organization.id;
-            updatedUserData.role = 'member';
-          }
-
-          if (!updatedUserData.organization_id) {
-            console.warn('No organization ID found in invitation response or page data');
-          }
-
-          storeUserData(updatedUserData);
-        }
-        
         setSuccess(true);
-        navigate("/boards");
+        if (currentUser) {
+          const userSubdomain = currentUser.subdomain || '';
+          const { redirectToUserOrganization } = await import('~/lib/tenancy');
+          redirectToUserOrganization(userSubdomain, '/tenant/boards');
+        } else {
+          navigate("/tenant/boards");
+        }
       } else {
         setError(response.error || 'Failed to accept invitation');
       }
     } catch (error) {
       console.error('Error accepting invitation:', error);
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -141,17 +129,28 @@ export default function EmailInvitation({params}: Route.ComponentProps) {
                   <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
                 </div>
               )}
+
+              {success && (
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                  <p className="text-green-600 dark:text-green-400 text-sm">
+                    Invitation accepted successfully! Redirecting...
+                  </p>
+                </div>
+              )}
               
 
               <div className="flex gap-4">
                 <button
                   onClick={handleAcceptInvitation}
-                  disabled={isLoading}
+                  disabled={isLoading || success}
                   className="flex-1 btn-primary text-center"
                 >
-                  {isLoading ? "Accepting Invitation..." : "Accept Invitation"}
+                  {isLoading ? "Accepting Invitation..." : success ? "Accepted!" : "Accept Invitation"}
                 </button>
-                <button className="flex-1 btn-outline">
+                <button 
+                  disabled={isLoading || success}
+                  className="flex-1 btn-outline"
+                >
                   Decline
                 </button>
               </div>

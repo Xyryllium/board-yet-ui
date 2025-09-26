@@ -162,7 +162,7 @@ export default function BoardView({ params }: Route.ComponentProps) {
                     <ErrorAlert error="Board not found" onDismiss={() => {}} />
                     <div className="mt-8 flex justify-center">
                         <Link
-                            to="/boards"
+                            to="/tenant/boards"
                             className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
                         >
                             Back to Boards
@@ -174,7 +174,7 @@ export default function BoardView({ params }: Route.ComponentProps) {
     }
 
     return (
-        <div className="page-container min-h-screen">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
             {notification && (
                 <Notification
                     message={notification.message}
@@ -182,7 +182,7 @@ export default function BoardView({ params }: Route.ComponentProps) {
                     onClose={clearNotification}
                 />
             )}
-            <div className="container mx-auto px-4 py-6 h-full flex flex-col">
+            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 h-full flex flex-col">
                 <BoardHeader
                     boardName={board.name || 'Unnamed Board'}
                     boardDescription={board.description || 'No description provided'}

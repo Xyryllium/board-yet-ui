@@ -22,6 +22,31 @@ export interface LogoutResponse {
 export interface CreateOrganizationData {
   name: string;
   description?: string;
+  subdomain?: string;
+  settings?: {
+    theme: {
+      primaryColor: string;
+      logo?: string;
+      customCss?: string;
+    };
+    //TODO: Add more organization settings as needed, for now we keep it simple
+    // e.g., billing info, plan type, etc.
+    // plan: {
+    //   type: 'free' | 'pro' | 'enterprise';
+    //   billingCycle: 'monthly' | 'yearly';
+    // };
+    // features: {
+    //   allowGuestAccess: boolean;
+    //   maxBoards: number;
+    //   maxMembers: number;
+    //   allowFileUploads: boolean;
+    // };
+    branding: {
+      companyName: string;
+      supportEmail: string;
+      customDomain?: string;
+    };
+  };
 }
 
 export interface OrganizationDetails {

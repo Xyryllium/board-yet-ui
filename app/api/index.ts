@@ -1,6 +1,7 @@
 export { loginUser } from './auth/login';
 export { logoutUser } from './auth/logout';
 export { signupUser } from './auth/signup';
+export { getCurrentUser } from './auth/me';
 
 export { createOrganization } from './organizations/create';
 
