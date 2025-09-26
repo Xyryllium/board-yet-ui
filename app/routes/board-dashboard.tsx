@@ -7,6 +7,7 @@ import { ErrorAlert, LoadingSpinner, CreatingIndicator } from "~/components/ui";
 import { useAuth } from "~/hooks/useAuth";
 import { useBoardManagement } from "~/hooks/useBoardManagement";
 import { isAdmin } from "~/lib/auth";
+import { useUser } from "~/contexts/UserContext";
 
 export function meta({}: Route.MetaArgs) {
     return [
@@ -17,7 +18,8 @@ export function meta({}: Route.MetaArgs) {
 
 export default function BoardDashboard() {
     const { isInitialized } = useAuth();
-    const isUserAdmin = isAdmin();
+    const { user } = useUser();
+    const isUserAdmin = isAdmin(user || undefined);
     const {
         boards,
         paginatedBoards,
@@ -55,8 +57,8 @@ export default function BoardDashboard() {
     }
 
     return (
-        <div className="page-container">
-            <div className="container mx-auto px-4 py-8">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <DashboardHeader
                     title="Board Dashboard"
                     description="Manage your boards"
@@ -93,7 +95,7 @@ export default function BoardDashboard() {
                 {isUserAdmin && (
                     <div className="mt-8 flex justify-center space-x-4">
                         <Link
-                            to="/organization-dashboard"
+                            to="/tenant/"
                             className="btn-primary-lg"
                         >
                             Back to Organization

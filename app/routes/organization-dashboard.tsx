@@ -1,7 +1,8 @@
 import type { Route } from "./+types/organization-dashboard";
 import { Link } from "react-router";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { getAuthToken, isAuthenticated, getUserData } from "../lib/auth";
+import { getAuthToken } from "../lib/auth";
+import { useUser } from "../contexts/UserContext";
 import { AuthRequired } from "../components/auth";
 import { DashboardHeader } from "~/components/dashboard/DashboardHeader";
 import { MemberInviteForm } from "~/components/dashboard/MemberInviteForm";
@@ -18,25 +19,27 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function OrganizationDashboard() {
-  const userData = getUserData();
-  const [isAuth, setIsAuth] = useState<boolean>(() => isAuthenticated());
-  const [token, setToken] = useState<string | null>(() => getAuthToken());
+  const { user: userData, isLoading: userLoading } = useUser();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isInitializing, setIsInitializing] = useState<boolean>(true);
-  const [organizationId, setOrganizationId] = useState<number | null>(userData?.organization_id || null);
   const [notification, setNotification] = useState<{
     message: string;
     type: 'success' | 'error' | 'info';
   } | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
-  const [userInitials, setUserInitials] = useState<string>(() => {
-    return userData?.name ? formatIconText(userData.name) : 'Y';
-  });
+  const [userInitials, setUserInitials] = useState<string>('Y');
   const hasFetchedMembers = useRef(false);
 
   const clearNotification = () => {
     setNotification(null);
   };
+
+  const isAuth = !!userData;
+
+  useEffect(() => {
+    if (userData?.name) {
+      setUserInitials(formatIconText(userData.name));
+    }
+  }, [userData]);
 
   const fetchMembers = useCallback(async (organizationId: number) => {
     if (organizationId === 0) {
@@ -59,8 +62,6 @@ export default function OrganizationDashboard() {
   }, []);
 
   useEffect(() => {
-    setIsInitializing(false);
-    
     if (hasFetchedMembers.current) {
       return;
     }
@@ -72,11 +73,11 @@ export default function OrganizationDashboard() {
   }, [fetchMembers, userData]);
 
   const sendInvitation = async (email: string, role: string): Promise<boolean> => {
-    if (!organizationId) {
+    if (!userData?.organization_id) {
       throw new Error('Organization ID not found');
     }
     const memberInfo: Member = { email, role };
-    const response = await inviteMember(memberInfo, organizationId);
+    const response = await inviteMember(memberInfo, userData.organization_id);
     return response.success && !!response.invitation;
   };
 
@@ -88,7 +89,7 @@ export default function OrganizationDashboard() {
     setIsLoading(true);
     
     try {
-      if (!organizationId) {
+      if (!userData?.organization_id) {
         showNotification("Organization ID not found. Please log in again.", 'error');
         return;
       }
@@ -132,9 +133,9 @@ export default function OrganizationDashboard() {
     }
   };
 
-  if (isInitializing) {
+  if (userLoading) {
     return (
-      <div className="page-container flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">Loading...</p>
@@ -155,7 +156,7 @@ export default function OrganizationDashboard() {
   }
 
   return (
-    <div className="page-container">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       {notification && (
         <Notification
           message={notification.message}
@@ -163,7 +164,7 @@ export default function OrganizationDashboard() {
           onClose={clearNotification}
         />
       )}
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-4xl mx-auto">
           <DashboardHeader 
             title="Organization Dashboard"
@@ -224,7 +225,7 @@ export default function OrganizationDashboard() {
               View Overview
             </Link> */}
             <Link
-              to="/boards"
+              to="/tenant/boards"
               className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg font-medium hover:from-emerald-700 hover:to-teal-700 transition-all duration-200"
             >
               Manage Board
