@@ -136,7 +136,21 @@ export function SignupForm({ onSwitchToLogin, initialEmail, invitationToken }: S
         }
         
         if (invitationToken) {
-          navigate(`/tenant/invitations/accept/${invitationToken}`);
+          try {
+            const { acceptInvitation } = await import('../../lib/member');
+            const invitationResponse = await acceptInvitation(invitationToken);
+            
+            if (invitationResponse.success) {
+              const userSubdomain = response.user?.subdomain || 'team-stark';
+              const { redirectToUserOrganization } = await import('../../lib/tenancy');
+              redirectToUserOrganization(userSubdomain, '/tenant/boards');
+            } else {
+              navigate("/tenant/");
+            }
+          } catch (error) {
+            console.error('Failed to accept invitation after signup:', error);
+            navigate("/tenant/");
+          }
         } else {
           navigate("/tenant/");
         }
