@@ -39,6 +39,8 @@ body {
   position: relative;
   overflow-x: auto;
   overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
 }
 
 .horizontal-scroll::-webkit-scrollbar {
@@ -551,4 +553,35 @@ body {
 
 .column-item-dragging {
   @apply opacity-50;
+}
+
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+
+  .horizontal-scroll {
+    @apply -mx-4 px-4;
+  }
+
+  .horizontal-scroll::-webkit-scrollbar {
+    height: 8px;
+  }
+}
+
+.text-responsive {
+  @apply break-words;
+  overflow-wrap: anywhere;
+}
+
+.responsive-container {
+  @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.no-horizontal-overflow {
+  @apply overflow-x-hidden;
+}
+
+.responsive-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
 }

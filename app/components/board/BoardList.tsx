@@ -86,7 +86,7 @@ export function BoardList({boards, allBoards, totalBoards, currentPage, totalPag
                     boards.map((board) => (
                         <div key={board.id} className="group relative">
                             <Link 
-                                to={`/board/${board.id}`}
+                                to={`/tenant/board/${board.id}`}
                                 className="block"
                             >
                                 <div className="board-card">

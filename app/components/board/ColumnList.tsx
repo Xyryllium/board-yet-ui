@@ -19,23 +19,23 @@ interface ColumnListProps {
 }
 
 const COLUMN_STYLES = {
-    container: "overflow-x-auto pb-4 horizontal-scroll flex-1 flex",
-    columnsWrapper: "flex gap-6 min-w-max px-1 h-full flex-1",
+    container: "overflow-x-auto pb-4 horizontal-scroll flex-1 flex w-full",
+    columnsWrapper: "flex gap-4 sm:gap-6 min-w-max px-1 h-full flex-1",
     column: (isDragOver: boolean) => 
-        `bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 border-2 rounded-xl p-5 hover:shadow-lg transition-all duration-200 w-80 flex-shrink-0 flex flex-col min-h-full ${
+        `bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 border-2 rounded-xl p-4 sm:p-5 hover:shadow-lg transition-all duration-200 w-72 sm:w-80 flex-shrink-0 flex flex-col min-h-full ${
             isDragOver 
                 ? 'border-blue-400 bg-blue-50 dark:bg-blue-900/20' 
                 : 'border-gray-200 dark:border-gray-600'
         }`,
-    columnHeader: "flex items-center justify-between mb-4",
-    columnTitle: "heading-5 flex items-center gap-2",
-    taskCount: "text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full",
-    tasksContainer: "space-y-3 flex-1 overflow-y-auto min-h-0",
-    addTaskButton: "w-full border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg p-4 text-gray-500 dark:text-gray-400 hover:border-blue-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors flex items-center justify-center gap-2 flex-1 min-h-[60px]",
-    addColumnCard: "bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-dashed border-blue-300 dark:border-blue-600 rounded-xl p-6 flex items-center justify-center hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer w-80 flex-shrink-0 min-h-full",
+    columnHeader: "flex items-center justify-between mb-3 sm:mb-4",
+    columnTitle: "text-sm sm:text-base font-semibold text-gray-900 dark:text-white flex items-center gap-2 truncate",
+    taskCount: "text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded-full flex-shrink-0",
+    tasksContainer: "space-y-2 sm:space-y-3 flex-1 overflow-y-auto min-h-0",
+    addTaskButton: "w-full border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg p-3 sm:p-4 text-gray-500 dark:text-gray-400 hover:border-blue-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors flex items-center justify-center gap-2 flex-1 min-h-[50px] sm:min-h-[60px] text-sm",
+    addColumnCard: "bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-dashed border-blue-300 dark:border-blue-600 rounded-xl p-4 sm:p-6 flex items-center justify-center hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer w-72 sm:w-80 flex-shrink-0 min-h-full",
     addColumnContent: "text-center",
-    addColumnIcon: "w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3",
-    addColumnTitle: "text-sm font-medium text-blue-600 dark:text-blue-400 mb-1",
+    addColumnIcon: "w-10 h-10 sm:w-12 sm:h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2 sm:mb-3",
+    addColumnTitle: "text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400 mb-1",
     addColumnDescription: "text-xs text-blue-500 dark:text-blue-500"
 } as const;
 
@@ -77,7 +77,7 @@ export function ColumnList({
         <div className={COLUMN_STYLES.container}>
             <div 
                 className={COLUMN_STYLES.columnsWrapper} 
-                style={{ minWidth: `${Math.max(columns.length, 1) * 320}px` }}
+                style={{ minWidth: `${Math.max(columns.length, 1) * 288}px` }}
             >
                 {columns.map((column) => {
                     const columnTasks = getTasksForColumn(column.id);
