@@ -7,8 +7,9 @@ import { LoadingSpinner, ErrorAlert, Notification } from "~/components/ui";
 import { AddColumnModal, AddTaskModal } from "~/components/board";
 import { useTaskDragAndDrop } from "~/components/board/hooks/useTaskDragAndDrop";
 import type { CreateTaskData } from "~/api/types";
+import { useUser } from "~/contexts/UserContext";
+import { isAdmin } from "~/lib/auth";
 
-// Local imports
 import { BoardHeader } from "~/components/board/BoardHeader";
 import { BoardContent } from "~/components/board/BoardContent";
 import { useNotification } from "~/hooks/useNotification";
@@ -27,6 +28,8 @@ export function meta({ params }: Route.MetaArgs) {
 
 export default function BoardView({ params }: Route.ComponentProps) {
     const { isInitialized } = useAuth();
+    const { user } = useUser();
+    const isUserAdmin = isAdmin(user || undefined);
     const boardsHook = useBoards();
     const boardId = parseInt(params.id);
     const board = boardsHook.boards.find(b => b.id === boardId);
@@ -204,6 +207,7 @@ export default function BoardView({ params }: Route.ComponentProps) {
                     onUpdateTaskDescription={handleUpdateTaskDescription}
                     onAddTaskClick={handleAddTaskClick}
                     onCreateColumn={() => setIsModalOpen(true)}
+                    isAdmin={isUserAdmin}
                 />
 
                 <AddColumnModal

@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router";
 import { getTenantFromHostname, isMainDomain } from "../../lib/tenancy";
 import { isAdmin, logoutUser } from "../../lib/auth";
 import { useUser } from "../../contexts/UserContext";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Navigation() {
   const navigate = useNavigate();
@@ -100,6 +101,7 @@ export function Navigation() {
                 )}
               </div>
             )}
+            <ThemeToggle />
             <button
               onClick={handleLogout}
               className="nav-link hover:text-red-600 dark:hover:text-red-400 transition-colors whitespace-nowrap"
@@ -120,6 +122,7 @@ export function Navigation() {
                 )}
               </div>
             )}
+            <ThemeToggle />
             <button
               onClick={handleLogout}
               className="text-xs px-2 py-1 text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"

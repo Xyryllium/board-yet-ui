@@ -21,9 +21,10 @@ interface BoardProps {
     onUpdateColumn?: (boardId: number, columnId: number, name: string, order: number) => void;
     onDeleteColumn?: (boardId: number, columnId: number) => void;
     onReorderColumns?: (boardId: number, columns: Column[]) => void;
+    isAdmin?: boolean;
 }
 
-export function BoardList({boards, allBoards, totalBoards, currentPage, totalPages, onPageChange, onAddColumns, onUpdateColumn, onDeleteColumn, onReorderColumns}: BoardProps) {
+export function BoardList({boards, allBoards, totalBoards, currentPage, totalPages, onPageChange, onAddColumns, onUpdateColumn, onDeleteColumn, onReorderColumns, isAdmin = false}: BoardProps) {
     const [selectedBoardId, setSelectedBoardId] = useState<number | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -113,32 +114,34 @@ export function BoardList({boards, allBoards, totalBoards, currentPage, totalPag
                                     </div>
                                 </div>
                             </Link>
-                            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2">
-                                <button 
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        handleAddColumnClick(board.id);
-                                    }}
-                                    className="btn-icon btn-icon-blue"
-                                    title="Add Column"
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                    </svg>
-                                </button>
-                                <button 
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                    }}
-                                    className="btn-icon btn-icon-gray"
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                    </svg>
-                                </button>
-                            </div>
+                            {isAdmin && (
+                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2">
+                                    <button 
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            handleAddColumnClick(board.id);
+                                        }}
+                                        className="btn-icon btn-icon-blue"
+                                        title="Add Column"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                    </button>
+                                    <button 
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                        }}
+                                        className="btn-icon btn-icon-gray"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ))
                 )}

@@ -1,5 +1,6 @@
 import type { Route } from "./+types/home";
 import { AuthForm } from "../components";
+import { ThemeToggle } from "../components/ui/ThemeToggle";
 import { Link, useSearchParams } from "react-router";
 
 export function meta({}: Route.MetaArgs) {
@@ -18,6 +19,9 @@ export default function Home() {
 
   return (
     <div className="page-container">
+      <div className="absolute top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
       <div className="page-content">
         <div className="grid-2-lg items-center min-h-[80vh]">
           <div className="space-section">

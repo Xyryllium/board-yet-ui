@@ -12,6 +12,7 @@ import type { Route } from "./+types/root";
 import { Navigation } from "./components";
 import { useOrganizationRedirect } from "./hooks/useOrganizationRedirect";
 import { UserProvider } from "./contexts/UserContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -54,9 +55,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <UserProvider>
-          <LayoutContent>{children}</LayoutContent>
-        </UserProvider>
+        <ThemeProvider>
+          <UserProvider>
+            <LayoutContent>{children}</LayoutContent>
+          </UserProvider>
+        </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

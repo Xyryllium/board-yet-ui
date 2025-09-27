@@ -6,6 +6,8 @@
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+@variant dark (.dark &);
+
 html,
 body {
   @apply bg-white dark:bg-gray-950;
@@ -236,11 +238,19 @@ body {
 }
 
 .form-input {
-  @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors;
+  @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors;
+}
+
+.form-input::placeholder {
+  @apply text-gray-500 dark:text-gray-400;
 }
 
 .form-input-sm {
-  @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors;
+  @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors;
+}
+
+.form-input-sm::placeholder {
+  @apply text-gray-500 dark:text-gray-400;
 }
 
 .form-checkbox {
@@ -248,7 +258,11 @@ body {
 }
 
 .form-textarea {
-  @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-colors resize-none;
+  @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors resize-none;
+}
+
+.form-textarea::placeholder {
+  @apply text-gray-500 dark:text-gray-400;
 }
 
 .btn-primary {
