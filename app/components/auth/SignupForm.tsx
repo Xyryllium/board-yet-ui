@@ -97,6 +97,12 @@ export function SignupForm({ onSwitchToLogin, initialEmail, invitationToken }: S
         
         if (createOrganization && organizationData.name.trim()) {
           try {
+            const { storeAuthToken } = await import('../../lib/auth');
+            const { apiClient } = await import('../../lib/api');
+            
+            storeAuthToken(response.token, 3600);
+            apiClient.setAuthToken(response.token);
+            
             const subdomain = generateSubdomainFromName(organizationData.name.trim());
             
             const orgResponse = await createOrganizationAPI({
