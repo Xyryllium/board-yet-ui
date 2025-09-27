@@ -11,3 +11,11 @@
 .env.production.local
 
 !.env.example
+
+ssl/
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+*.pfx
