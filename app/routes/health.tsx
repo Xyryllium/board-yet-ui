@@ -4,15 +4,6 @@ export function meta() {
   ];
 }
 
-export function loader() {
-  return new Response("healthy", {
-    status: 200,
-    headers: {
-      "Content-Type": "text/plain",
-    },
-  });
-}
-
 export default function HealthCheck() {
   return (
     <div className="flex items-center justify-center min-h-screen">
