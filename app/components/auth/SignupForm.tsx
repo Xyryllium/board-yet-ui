@@ -151,14 +151,32 @@ export function SignupForm({ onSwitchToLogin, initialEmail, invitationToken }: S
               const { redirectToUserOrganization } = await import('../../lib/tenancy');
               redirectToUserOrganization(userSubdomain, '/tenant/boards');
             } else {
-              navigate("/tenant/");
+              const userSubdomain = response.user?.subdomain;
+              if (userSubdomain) {
+                const { redirectToUserOrganization } = await import('../../lib/tenancy');
+                redirectToUserOrganization(userSubdomain, '/tenant/');
+              } else {
+                navigate("/tenant/");
+              }
             }
           } catch (error) {
             console.error('Failed to accept invitation after signup:', error);
-            navigate("/tenant/");
+            const userSubdomain = response.user?.subdomain;
+            if (userSubdomain) {
+              const { redirectToUserOrganization } = await import('../../lib/tenancy');
+              redirectToUserOrganization(userSubdomain, '/tenant/');
+            } else {
+              navigate("/tenant/");
+            }
           }
         } else {
-          navigate("/tenant/");
+          const userSubdomain = response.user?.subdomain;
+          if (userSubdomain) {
+            const { redirectToUserOrganization } = await import('../../lib/tenancy');
+            redirectToUserOrganization(userSubdomain, '/tenant/');
+          } else {
+            navigate("/tenant/");
+          }
         }
       } else {
         if (response.error && response.error.includes('errors')) {
