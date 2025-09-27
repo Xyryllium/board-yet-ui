@@ -7,21 +7,9 @@
       "config": {
         "distDir": "build/client"
       }
-    },
-    {
-      "src": "app/api/**/*.ts",
-      "use": "@vercel/node"
     }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/health",
-      "dest": "/health"
-    },
     {
       "src": "/(.*)",
       "dest": "/index.html"
