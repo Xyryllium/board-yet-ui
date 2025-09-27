@@ -88,6 +88,7 @@ export default function BoardDashboard() {
                             onUpdateColumn={handleUpdateColumn}
                             onDeleteColumn={handleDeleteColumn}
                             onReorderColumns={handleReorderColumns}
+                            isAdmin={isUserAdmin}
                         />
                     </div>
                 </div>

@@ -17,6 +17,7 @@ interface BoardContentProps {
     onUpdateTaskDescription: (taskId: string, newDescription: string) => void;
     onAddTaskClick: (columnId: number) => void;
     onCreateColumn: () => void;
+    isAdmin?: boolean;
 }
 
 const BOARD_STYLES = {
@@ -37,12 +38,13 @@ export function BoardContent({
     onUpdateTaskTitle,
     onUpdateTaskDescription,
     onAddTaskClick,
-    onCreateColumn
+    onCreateColumn,
+    isAdmin = false
 }: BoardContentProps) {
     return (
         <div className={BOARD_STYLES.container}>
             {columns.length === 0 ? (
-                <EmptyBoard onCreateColumn={onCreateColumn} />
+                <EmptyBoard onCreateColumn={onCreateColumn} isAdmin={isAdmin} />
             ) : (
                 <div className={BOARD_STYLES.content}>
                     <ColumnList
@@ -59,6 +61,7 @@ export function BoardContent({
                         onUpdateTaskDescription={onUpdateTaskDescription}
                         onAddTaskClick={onAddTaskClick}
                         onCreateColumn={onCreateColumn}
+                        isAdmin={isAdmin}
                     />
                 </div>
             )}

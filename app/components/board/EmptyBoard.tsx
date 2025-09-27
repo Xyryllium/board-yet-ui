@@ -2,6 +2,7 @@ import React from 'react';
 
 interface EmptyBoardProps {
     onCreateColumn: () => void;
+    isAdmin?: boolean;
 }
 
 const EMPTY_BOARD_STYLES = {
@@ -27,7 +28,7 @@ const ICONS = {
     )
 } as const;
 
-export function EmptyBoard({ onCreateColumn }: EmptyBoardProps) {
+export function EmptyBoard({ onCreateColumn, isAdmin = false }: EmptyBoardProps) {
     return (
         <div className={EMPTY_BOARD_STYLES.container}>
             <div className={EMPTY_BOARD_STYLES.iconContainer}>
@@ -39,13 +40,15 @@ export function EmptyBoard({ onCreateColumn }: EmptyBoardProps) {
             <p className={EMPTY_BOARD_STYLES.description}>
                 Get started by creating your first column to organize your tasks and ideas.
             </p>
-            <button
-                onClick={onCreateColumn}
-                className={EMPTY_BOARD_STYLES.button}
-            >
-                {ICONS.plus}
-                Create Your First Column
-            </button>
+            {isAdmin && (
+                <button
+                    onClick={onCreateColumn}
+                    className={EMPTY_BOARD_STYLES.button}
+                >
+                    {ICONS.plus}
+                    Create Your First Column
+                </button>
+            )}
         </div>
     );
 }
