@@ -28,13 +28,6 @@ export default defineConfig(({ mode }) => {
     build: {
       minify: isProduction ? 'esbuild' : false,
       sourcemap: !isProduction,
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            router: ['react-router'],
-          },
-        },
-      },
       chunkSizeWarningLimit: 1000,
       cssCodeSplit: true,
     },
