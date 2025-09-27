@@ -10,7 +10,14 @@
     "docker:dev": "scripts\\docker-dev.bat",
     "docker:prod": "scripts\\docker-prod.bat",
     "docker:stop": "scripts\\docker-stop.bat",
-    "docker:logs": "scripts\\docker-logs.bat"
+    "docker:logs": "scripts\\docker-logs.bat",
+    "deploy": "scripts/deploy.sh",
+    "deploy:win": "scripts\\deploy.bat",
+    "deploy:vercel": "vercel --prod",
+    "deploy:preview": "vercel",
+    "vercel:dev": "vercel dev",
+    "health": "curl -f http://localhost/health || exit 1",
+    "ssl:setup": "scripts/setup-ssl.sh"
   },
   "dependencies": {
     "@react-router/node": "^7.7.1",

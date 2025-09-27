@@ -15,8 +15,13 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
+
+RUN apk add --no-cache dumb-init
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 reactrouter
+RUN mkdir -p /app/logs /app/uploads && chown -R reactrouter:nodejs /app
+
 
 COPY --from=builder --chown=reactrouter:nodejs /app/build ./build
 COPY --from=deps --chown=reactrouter:nodejs /app/node_modules ./node_modules
@@ -29,4 +34,8 @@ EXPOSE 3000
 ENV NODE_ENV=production
 ENV PORT=3000
 
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD node -e "require('http').get('http://localhost:3000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+
+ENTRYPOINT ["dumb-init", "--"]
 CMD ["npm", "run", "start"]
