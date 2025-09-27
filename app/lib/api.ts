@@ -171,7 +171,7 @@ export const API_ENDPOINTS = {
   },
   ORGANIZATION: {
     CREATE: '/organizations',
-    GET_BY_SUBDOMAIN: '/organizations/subdomain/{subdomain}',
+    GET_BY_SUBDOMAIN: '/organizations/subdomain/details/{subdomain}',
     GET_SETTINGS: '/organizations/{id}/settings',
     UPDATE_SETTINGS: '/organizations/{id}/settings',
     VALIDATE_SUBDOMAIN: '/organizations/subdomain/validate',

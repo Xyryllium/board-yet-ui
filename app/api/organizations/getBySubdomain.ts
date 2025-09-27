@@ -11,8 +11,9 @@ export interface GetOrganizationBySubdomainResponse {
 
 export async function getOrganizationBySubdomain(subdomain: string): Promise<GetOrganizationBySubdomainResponse> {
   try {
+    const endpoint = API_ENDPOINTS.ORGANIZATION.GET_BY_SUBDOMAIN.replace('{subdomain}', subdomain);
     const response = await apiClient.get<{success: boolean, data: OrganizationDetails}>(
-      `/organizations/subdomain/${subdomain}`
+      endpoint
     );
 
     return handleApiResponse(

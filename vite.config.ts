@@ -8,5 +8,20 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    // Enable subdomain support for localhost
+    hmr: {
+      port: 5173,
+    },
+    // Proxy API requests to avoid CORS issues
+    proxy: {
+      '/api': {
+        target: 'http://api-test-board.com:8000',
+        changeOrigin: true,
+        secure: false,
+        cookieDomainRewrite: {
+          'api-test-board.com': 'team-stark.localhost'
+        },
+      },
+    },
   },
 });
