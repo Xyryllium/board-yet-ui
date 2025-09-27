@@ -1,4 +1,4 @@
-import type { Member } from "~/lib/member";
+import type { Member } from "../types";
 import type { InvitationResponse } from "../types";
 import { API_ENDPOINTS, apiClient } from "../../lib/api";
 import { handleApiError, handleApiResponse } from "../utils";

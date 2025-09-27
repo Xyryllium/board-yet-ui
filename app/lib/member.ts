@@ -1,4 +1,4 @@
-import type { InvitationResponse, OrganizationDetailsResponse, Member, MemberResponse } from '~/api/types';
+import type { InvitationResponse, OrganizationDetailsResponse, Member, MemberResponse } from '../api/types';
 import { memberInvite as apiMemberInvite } from '../api/organizations/invite';
 import { acceptInvitation as apiAcceptInvitation } from '../api/organizations/acceptInvitation';
 import { listOrganizationDetails as apiListOrganizationDetails } from '../api/organizations/list';
