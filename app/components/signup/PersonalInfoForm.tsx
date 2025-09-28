@@ -1,3 +1,5 @@
+import { PasswordInput } from '../ui';
+
 interface FormField {
   id: string;
   name: keyof FormData;
@@ -79,17 +81,30 @@ function FormFieldComponent({
       <label htmlFor={field.id} className="form-label">
         {field.label}
       </label>
-      <input
-        type={field.type}
-        id={field.id}
-        className={`form-input ${error ? 'form-input-error' : ''}`}
-        placeholder={field.placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        required={field.required}
-      />
-      {error && (
-        <p className="text-red-500 text-sm mt-1">{error}</p>
+      {field.type === 'password' ? (
+        <PasswordInput
+          id={field.id}
+          value={value}
+          onChange={onChange}
+          placeholder={field.placeholder}
+          error={error}
+          required={field.required}
+        />
+      ) : (
+        <>
+          <input
+            type={field.type}
+            id={field.id}
+            className={`form-input ${error ? 'form-input-error' : ''}`}
+            placeholder={field.placeholder}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            required={field.required}
+          />
+          {error && (
+            <p className="text-red-500 text-sm mt-1">{error}</p>
+          )}
+        </>
       )}
     </div>
   );

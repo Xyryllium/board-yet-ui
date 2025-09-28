@@ -1,3 +1,5 @@
+import { PasswordInput } from '../ui';
+
 interface LoginFieldsProps {
   className?: string;
   email: string;
@@ -42,18 +44,14 @@ export function LoginFields({
         <label htmlFor="password" className="form-label">
           Password
         </label>
-        <input
-          type="password"
+        <PasswordInput
           id="password"
-          className={`form-input ${errors.password ? 'form-input-error' : ''}`}
-          placeholder="Enter your password"
           value={password}
-          onChange={(e) => onPasswordChange(e.target.value)}
+          onChange={onPasswordChange}
+          placeholder="Enter your password"
+          error={errors.password}
           required
         />
-        {errors.password && (
-          <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-        )}
       </div>
 
       <div className="flex justify-end">

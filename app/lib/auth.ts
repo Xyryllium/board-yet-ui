@@ -85,14 +85,38 @@ export function storeAuthToken(token: string, expiresIn?: number) {
       if (tokenExpiry) {
         localStorage.setItem(EXPIRY_KEY, tokenExpiry.toString());
       }
+      
+      const expiryDate = new Date();
+      if (expiresIn) {
+        expiryDate.setTime(expiryDate.getTime() + (expiresIn * 1000));
+      } else {
+        expiryDate.setTime(expiryDate.getTime() + (24 * 60 * 60 * 1000));
+      }
+      
+      document.cookie = `${TOKEN_KEY}=${token}; expires=${expiryDate.toUTCString()}; domain=.boardyet.com; path=/; secure; samesite=strict`;
+      
+      if (tokenExpiry) {
+        document.cookie = `${EXPIRY_KEY}=${tokenExpiry}; expires=${expiryDate.toUTCString()}; domain=.boardyet.com; path=/; secure; samesite=strict`;
+      }
     } catch (error) {
-      console.warn('Failed to store token in localStorage:', error);
+      console.warn('Failed to store token:', error);
     }
   }
   
   import('./api').then(({ apiClient }) => {
     apiClient.setAuthToken(token);
   });
+}
+
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop()?.split(';').shift() || null;
+  }
+  return null;
 }
 
 export function getAuthToken(): string | null {
@@ -102,8 +126,13 @@ export function getAuthToken(): string | null {
   
   if (typeof window !== 'undefined') {
     try {
-      const storedToken = localStorage.getItem(TOKEN_KEY);
-      const storedExpiry = localStorage.getItem(EXPIRY_KEY);
+      let storedToken = getCookie(TOKEN_KEY);
+      let storedExpiry = getCookie(EXPIRY_KEY);
+      
+      if (!storedToken) {
+        storedToken = localStorage.getItem(TOKEN_KEY);
+        storedExpiry = localStorage.getItem(EXPIRY_KEY);
+      }
       
       if (storedToken && storedExpiry) {
         const expiryTime = parseInt(storedExpiry);
@@ -122,7 +151,7 @@ export function getAuthToken(): string | null {
         }
       }
     } catch (error) {
-      console.warn('Failed to retrieve token from localStorage:', error);
+      console.warn('Failed to retrieve token:', error);
     }
   }
   
@@ -137,8 +166,11 @@ export function clearAuthToken() {
     try {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(EXPIRY_KEY);
+      
+      document.cookie = `${TOKEN_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=.boardyet.com; path=/;`;
+      document.cookie = `${EXPIRY_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=.boardyet.com; path=/;`;
     } catch (error) {
-      console.warn('Failed to clear token from localStorage:', error);
+      console.warn('Failed to clear token:', error);
     }
   }
   
