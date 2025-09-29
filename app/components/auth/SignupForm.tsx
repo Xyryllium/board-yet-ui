@@ -9,6 +9,7 @@ import { signupUser, type SignupCredentials } from "../../lib/auth";
 import { createOrganization as createOrganizationAPI } from "../../api/organizations/create";
 import { generateSubdomainFromName } from "../../lib/tenancy";
 import { useNavigate } from "react-router";
+import { useUser } from "../../contexts/UserContext";
 
 interface SignupFormProps {
   onSwitchToLogin?: () => void;
@@ -18,6 +19,7 @@ interface SignupFormProps {
 
 export function SignupForm({ onSwitchToLogin, initialEmail, invitationToken }: SignupFormProps) {
   const navigate = useNavigate();
+  const { refreshUser } = useUser();
   const [createOrganization, setCreateOrganization] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -151,6 +153,7 @@ export function SignupForm({ onSwitchToLogin, initialEmail, invitationToken }: S
               const { redirectToUserOrganization } = await import('../../lib/tenancy');
               redirectToUserOrganization(userSubdomain, '/tenant/boards');
             } else {
+              await refreshUser();
               navigate("/tenant/");
             }
           } catch (error) {
@@ -158,6 +161,7 @@ export function SignupForm({ onSwitchToLogin, initialEmail, invitationToken }: S
             navigate("/tenant/");
           }
         } else {
+          await refreshUser();
           navigate("/member");
         }
       } else {
