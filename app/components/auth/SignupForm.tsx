@@ -158,7 +158,7 @@ export function SignupForm({ onSwitchToLogin, initialEmail, invitationToken }: S
             navigate("/tenant/");
           }
         } else {
-          navigate("/tenant/");
+          navigate("/member");
         }
       } else {
         if (response.error && response.error.includes('errors')) {

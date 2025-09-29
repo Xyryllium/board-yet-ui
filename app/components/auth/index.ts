@@ -2,3 +2,7 @@ export { AuthForm } from "./AuthForm";
 export { LoginForm } from "./LoginForm";
 export { SignupForm } from "./SignupForm";
 export { default as AuthRequired } from "./AuthRequired";
+export { ForgotPasswordPage } from "./ForgotPasswordPage";
+export { ResetPasswordPage } from "./ResetPasswordPage";
+export { MemberPage } from "./MemberPage";
+export { InvitationPage } from "./InvitationPage";

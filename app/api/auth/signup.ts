@@ -5,7 +5,13 @@ import { handleApiResponse, handleApiError } from '../utils';
 
 export async function signupUser(credentials: SignupCredentials): Promise<AuthResponse> {
   try {
-    const response = await apiClient.post<{ user: User; token: string }>(
+    const response = await apiClient.post<{ 
+      data: { 
+        user: User; 
+        token: string; 
+      }; 
+      message: string; 
+    }>(
       API_ENDPOINTS.AUTH.REGISTER,
       credentials
     );
@@ -14,8 +20,8 @@ export async function signupUser(credentials: SignupCredentials): Promise<AuthRe
       response,
       (data) => ({
         success: true,
-        user: data.user,
-        token: data.token,
+        user: data.data.user,
+        token: data.data.token,
       }),
       'Signup failed'
     );

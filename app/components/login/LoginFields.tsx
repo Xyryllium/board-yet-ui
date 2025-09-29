@@ -1,4 +1,5 @@
 import { PasswordInput } from '../ui';
+import { Link } from 'react-router';
 
 interface LoginFieldsProps {
   className?: string;
@@ -55,9 +56,9 @@ export function LoginFields({
       </div>
 
       <div className="flex justify-end">
-        <a href="#" className="link-primary-sm">
+        <Link to="/forgot-password" className="link-primary-sm">
           Forgot password?
-        </a>
+        </Link>
       </div>
     </div>
   );

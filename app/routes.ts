@@ -5,6 +5,11 @@ export default [
 
   route("health", "routes/health.tsx"),
 
+  route("forgot-password", "routes/forgot-password.tsx"),
+  route("reset-password", "routes/reset-password.tsx"),
+  route("member", "routes/member.tsx"),
+  route("invitation", "routes/invitation.tsx"),
+
   route("invitations/accept/:token", "routes/email-invitation.tsx"),
 
   route("tenant", "routes/tenant/layout.tsx", [

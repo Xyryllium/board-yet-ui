@@ -168,6 +168,8 @@ export const API_ENDPOINTS = {
     LOGOUT: '/logout',
     REGISTER: '/register',
     ME: '/auth/me',
+    FORGOT_PASSWORD: '/forgot-password',
+    RESET_PASSWORD: '/reset-password',
   },
   ORGANIZATION: {
     CREATE: '/organizations',

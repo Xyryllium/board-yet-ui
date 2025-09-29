@@ -5,7 +5,14 @@ import { handleApiResponse, handleApiError } from '../utils';
 
 export async function loginUser(credentials: LoginCredentials): Promise<AuthResponse> {
   try {
-    const response = await apiClient.post<{ user: User; token: string }>(
+    const response = await apiClient.post<{ 
+      data: {
+        user: User; 
+        token: string;
+        message: string;
+      };
+      message: string;
+    }>(
       API_ENDPOINTS.AUTH.LOGIN,
       credentials
     );
@@ -14,8 +21,8 @@ export async function loginUser(credentials: LoginCredentials): Promise<AuthResp
       response,
       (data) => ({
         success: true,
-        user: data.user,
-        token: data.token,
+        user: data.data.user,
+        token: data.data.token,
       }),
       'Login failed'
     );
