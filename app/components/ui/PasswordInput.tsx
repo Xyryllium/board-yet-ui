@@ -9,6 +9,7 @@ interface PasswordInputProps {
   error?: string;
   required?: boolean;
   disabled?: boolean;
+  autoFocus?: boolean;
 }
 
 export function PasswordInput({
@@ -19,7 +20,8 @@ export function PasswordInput({
   className = "",
   error,
   required = false,
-  disabled = false
+  disabled = false,
+  autoFocus = false
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -38,6 +40,7 @@ export function PasswordInput({
         onChange={(e) => onChange(e.target.value)}
         required={required}
         disabled={disabled}
+        autoFocus={autoFocus}
       />
       <button
         type="button"

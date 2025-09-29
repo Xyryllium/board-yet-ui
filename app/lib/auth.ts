@@ -11,6 +11,17 @@ export interface SignupCredentials {
   confirmPassword: string;
 }
 
+export interface ForgotPasswordCredentials {
+  email: string;
+}
+
+export interface ResetPasswordCredentials {
+  email: string;
+  token: string;
+  password: string;
+  password_confirmation: string;
+}
+
 export interface User {
   id: number;
   name: string;
@@ -36,6 +47,8 @@ import { loginUser as apiLoginUser } from '../api/auth/login';
 import { signupUser as apiSignupUser } from '../api/auth/signup';
 import { logoutUser as apiLogoutUser } from '../api/auth/logout';
 import { getCurrentUser as apiGetCurrentUser } from '../api/auth/me';
+import { forgotPassword as apiForgotPassword } from '../api/auth/forgotPassword';
+import { resetPassword as apiResetPassword } from '../api/auth/resetPassword';
 
 export async function loginUser(credentials: LoginCredentials): Promise<AuthResponse> {
   const result = await apiLoginUser(credentials);
@@ -66,6 +79,14 @@ export async function logoutUser() {
   return result;
 }
 
+export async function forgotPassword(credentials: ForgotPasswordCredentials): Promise<AuthResponse> {
+  return await apiForgotPassword(credentials);
+}
+
+export async function resetPassword(credentials: ResetPasswordCredentials): Promise<AuthResponse> {
+  return await apiResetPassword(credentials);
+}
+
 let authToken: string | null = null;
 let tokenExpiry: number | null = null;
 
@@ -93,10 +114,15 @@ export function storeAuthToken(token: string, expiresIn?: number) {
         expiryDate.setTime(expiryDate.getTime() + (24 * 60 * 60 * 1000));
       }
       
-      document.cookie = `${TOKEN_KEY}=${token}; expires=${expiryDate.toUTCString()}; domain=.boardyet.com; path=/; secure; samesite=strict`;
+      // Set cookie for current domain (localhost or production)
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname.includes('localhost');
+      const cookieDomain = isLocalhost ? '.localhost' : '.boardyet.com';
+      const cookieSecure = !isLocalhost;
+      
+      document.cookie = `${TOKEN_KEY}=${token}; expires=${expiryDate.toUTCString()}; domain=${cookieDomain}; path=/; ${cookieSecure ? 'secure;' : ''} samesite=strict`;
       
       if (tokenExpiry) {
-        document.cookie = `${EXPIRY_KEY}=${tokenExpiry}; expires=${expiryDate.toUTCString()}; domain=.boardyet.com; path=/; secure; samesite=strict`;
+        document.cookie = `${EXPIRY_KEY}=${tokenExpiry}; expires=${expiryDate.toUTCString()}; domain=${cookieDomain}; path=/; ${cookieSecure ? 'secure;' : ''} samesite=strict`;
       }
     } catch (error) {
       console.warn('Failed to store token:', error);
@@ -167,8 +193,12 @@ export function clearAuthToken() {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(EXPIRY_KEY);
       
-      document.cookie = `${TOKEN_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=.boardyet.com; path=/;`;
-      document.cookie = `${EXPIRY_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=.boardyet.com; path=/;`;
+      // Clear cookies for both localhost and production domains
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname.includes('localhost');
+      const cookieDomain = isLocalhost ? '.localhost' : '.boardyet.com';
+      
+      document.cookie = `${TOKEN_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=${cookieDomain}; path=/;`;
+      document.cookie = `${EXPIRY_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=${cookieDomain}; path=/;`;
     } catch (error) {
       console.warn('Failed to clear token:', error);
     }

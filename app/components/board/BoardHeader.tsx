@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import { formatRelativeTime } from '~/lib/dateUtils';
 import { isMember } from '~/lib/auth';
+import { useUser } from '~/contexts/UserContext';
 
 interface BoardHeaderProps {
     boardName: string;
@@ -37,6 +38,8 @@ const ICONS = {
 export function BoardHeader({ boardName, boardDescription, columnCount , columnCreatedAt }: BoardHeaderProps) {
     const relativeTime = formatRelativeTime(columnCreatedAt);
     const isUserMember = isMember();
+    const { user } = useUser();
+    const hasOrganization = user ? (user.organization_id && user.subdomain) : false;
     
     return (
         <div className={HEADER_STYLES.container}>
@@ -60,7 +63,7 @@ export function BoardHeader({ boardName, boardDescription, columnCount , columnC
                     </div>
                 </div>
                 
-                {isUserMember && (
+                {isUserMember && hasOrganization && (
                     <div className="flex-shrink-0 mt-4 lg:mt-0">
                         <Link
                             to="/tenant/boards"

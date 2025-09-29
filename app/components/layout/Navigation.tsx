@@ -11,6 +11,7 @@ export function Navigation() {
   const isTenantSubdomain = tenantSlug && !isMainDomain();
 
   const isUserAdmin = userData ? isAdmin(userData) : false;
+  const hasOrganization = userData ? (userData.organization_id && userData.subdomain) : false;
 
   const handleLogout = async () => {
     try {
@@ -35,7 +36,7 @@ export function Navigation() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex-between">
             <div className="flex items-center space-x-6">
-              <Link to={getTenantUrl("/boards")} className="nav-brand">
+              <Link to={userData && userData.organization_id && userData.subdomain ? getTenantUrl("/boards") : "/member"} className="nav-brand">
                 Board Yet
               </Link>
             </div>
@@ -57,7 +58,7 @@ export function Navigation() {
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 sm:space-x-6">
-            <Link to={getTenantUrl(isUserAdmin ? "/" : "/boards")} className="nav-brand text-xl sm:text-2xl">
+            <Link to={hasOrganization ? getTenantUrl(isUserAdmin ? "/" : "/boards") : "/member"} className="nav-brand text-xl sm:text-2xl">
               Board Yet
             </Link>
           </div>
@@ -76,7 +77,7 @@ export function Navigation() {
               </div>
             )}
             
-            {!isUserAdmin && (
+            {!isUserAdmin && hasOrganization && (
               <div className="flex items-center space-x-4 lg:space-x-6">
                 <Link to={getTenantUrl("/boards")} className="nav-link whitespace-nowrap">
                   My Boards
@@ -148,7 +149,7 @@ export function Navigation() {
               </>
             )}
             
-            {!isUserAdmin && (
+            {!isUserAdmin && hasOrganization && (
               <Link to={getTenantUrl("/boards")} className="nav-link py-2">
                 My Boards
               </Link>

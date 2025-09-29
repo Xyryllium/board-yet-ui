@@ -79,7 +79,7 @@ export function LoginForm({ onSwitchToSignup, initialEmail }: LoginFormProps) {
           if(response.user.role === 'admin')
             navigate("/tenant/");
           else
-            navigate("/tenant/boards");
+            navigate("/member");
         }
       } else {
         setErrors({ general: response.error || "Login failed. Please try again." });
