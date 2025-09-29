@@ -32,20 +32,28 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
   const isTenantRoute = location.pathname.startsWith("/tenant");
+  const isAuthPage = location.pathname === "/forgot-password" || 
+                    location.pathname === "/reset-password" ||
+                    location.pathname.startsWith("/invitations/accept");
 
-  if (!isTenantRoute) {
+  if (!isTenantRoute && !isAuthPage) {
     useOrganizationRedirect();
   }
 
   return (
     <>
-      {!isHomePage && !isTenantRoute && <Navigation />}
+      {!isHomePage && !isTenantRoute && !isAuthPage && <Navigation />}
       {children}
     </>
   );
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+  const isAuthPage = location.pathname === "/forgot-password" || 
+                    location.pathname === "/reset-password" ||
+                    location.pathname.startsWith("/invitations/accept");
+
   return (
     <html lang="en">
       <head>
@@ -56,9 +64,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ThemeProvider>
-          <UserProvider>
+          {isAuthPage ? (
             <LayoutContent>{children}</LayoutContent>
-          </UserProvider>
+          ) : (
+            <UserProvider>
+              <LayoutContent>{children}</LayoutContent>
+            </UserProvider>
+          )}
         </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
