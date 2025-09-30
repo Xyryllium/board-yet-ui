@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { useEffect } from "react";
 import { BoardForm, BoardList } from "~/components/board";
 import { ErrorAlert, LoadingSpinner, CreatingIndicator } from "~/components/ui";
+import { EmailVerificationPrompt } from "~/components/auth";
 import { useAuth } from "~/hooks/useAuth";
 import { useBoardManagement } from "~/hooks/useBoardManagement";
 import { isAdmin } from "~/lib/auth";
@@ -59,6 +60,8 @@ export default function BoardDashboard() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <EmailVerificationPrompt />
+                
                 <DashboardHeader
                     title="Board Dashboard"
                     description="Manage your boards"

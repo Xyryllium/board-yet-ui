@@ -2,6 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  email_verified?: boolean;
   role?: string;
   organization_id?: number;
 }
