@@ -44,13 +44,12 @@ A **modern React frontend** for Board Yet, a multi-tenant Trello-style project m
 
 ## Tech Stack
 
-- **Frontend Framework:** React 18 with React Router v7
+- **Frontend Framework:** React 19 with React Router v7
 - **Language:** TypeScript
-- **Styling:** Tailwind CSS with custom design system
+- **Styling:** Tailwind CSS v4 with custom design system
 - **State Management:** React Context + Custom Hooks
-- **HTTP Client:** Axios with interceptors
+- **HTTP Client:** Custom Fetch API wrapper with TypeScript
 - **Build Tool:** Vite
-- **Testing:** Vitest + React Testing Library
 - **Deployment:** Docker + Nginx
 
 ## Project Structure
@@ -84,8 +83,8 @@ app/
 1. **Clone the repository:**
 
 ```bash
-git clone https://github.com/Xyryllium/board-yet-frontend.git
-cd board-yet-frontend
+git clone https://github.com/Xyryllium/board-yet-ui.git
+cd board-yet-ui
 ```
 
 2. **Install dependencies:**
@@ -141,10 +140,10 @@ npm run build
 
 ```bash
 # Build production image
-docker build -f Dockerfile -t board-yet-frontend .
+docker build -f Dockerfile -t board-yet-ui .
 
 # Run production container
-docker run -p 3000:3000 board-yet-frontend
+docker run -p 3000:3000 board-yet-ui
 ```
 
 ## API Integration
@@ -257,10 +256,10 @@ vercel --prod
 
 ```bash
 # Build production image
-docker build -f Dockerfile -t board-yet-frontend .
+docker build -f Dockerfile -t board-yet-ui .
 
 # Deploy to your platform
-docker run -d -p 3000:3000 board-yet-frontend
+docker run -d -p 3000:3000 board-yet-ui
 ```
 
 ### Environment Variables
@@ -302,8 +301,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Support
 
-- **Documentation:** [docs.boardyet.com](https://docs.boardyet.com)
-- **Issues:** [GitHub Issues](https://github.com/Xyryllium/board-yet-frontend/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/Xyryllium/board-yet-frontend/discussions)
+- **Issues:** [GitHub Issues](https://github.com/Xyryllium/board-yet-ui/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/Xyryllium/board-yet-ui/discussions)
 
 ---
