@@ -27,7 +27,6 @@ export default function EmailInvitation({params}: Route.ComponentProps) {
     try {
       setIsLoading(true);
       setError(null);
-      const currentUser = await getCurrentUser();
       
       const response = await acceptInvitation(token);
       
@@ -38,12 +37,18 @@ export default function EmailInvitation({params}: Route.ComponentProps) {
         navigate(url);
       } else if (response.success) {
         setSuccess(true);
-        if (currentUser) {
-          const userSubdomain = currentUser.subdomain || '';
+        
+        const updatedUser = await getCurrentUser();
+        
+        if (updatedUser && updatedUser.subdomain) {
           const { redirectToUserOrganization } = await import('~/lib/tenancy');
-          redirectToUserOrganization(userSubdomain, '/tenant/boards');
+          redirectToUserOrganization(updatedUser.subdomain, '/tenant/boards');
+        } else if (updatedUser && updatedUser.organization_id) {
+          const { redirectToUserOrganization } = await import('~/lib/tenancy');
+          const generatedSubdomain = `org-${updatedUser.organization_id}`;
+          redirectToUserOrganization(generatedSubdomain, '/tenant/boards');
         } else {
-          navigate("/tenant/boards");
+          setError('Unable to determine organization. Please try logging in again.');
         }
       } else {
         setError(response.error || 'Failed to accept invitation');

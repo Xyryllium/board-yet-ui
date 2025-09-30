@@ -6,6 +6,7 @@ import { SubmitButton } from "../forms";
 import { LoginFormFooter } from "../login";
 import { loginUser, type LoginCredentials } from "../../lib/auth";
 import { redirectToUserOrganization } from "../../lib/tenancy";
+import { useUser } from "../../contexts/UserContext";
 
 interface LoginFormProps {
   onSwitchToSignup?: () => void;
@@ -14,6 +15,7 @@ interface LoginFormProps {
 
 export function LoginForm({ onSwitchToSignup, initialEmail }: LoginFormProps) {
   const navigate = useNavigate();
+  const { refreshUser } = useUser();
   const [formData, setFormData] = useState({
     email: initialEmail || "",
     password: ""
@@ -76,10 +78,13 @@ export function LoginForm({ onSwitchToSignup, initialEmail }: LoginFormProps) {
           const path = response.user.role === 'admin' ? '/tenant/' : '/tenant/boards';
           redirectToUserOrganization(userSubdomain, path);
         } else {
-          if(response.user.role === 'admin')
+          if(response.user.role === 'admin') {
+            await refreshUser();
             navigate("/tenant/");
-          else
+          } else {
+            await refreshUser();
             navigate("/member");
+          }
         }
       } else {
         setErrors({ general: response.error || "Login failed. Please try again." });
