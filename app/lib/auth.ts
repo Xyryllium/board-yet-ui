@@ -158,9 +158,18 @@ export function getAuthToken(): string | null {
       let storedToken = getCookie(TOKEN_KEY);
       let storedExpiry = getCookie(EXPIRY_KEY);
       
+      const isLocalhost = window.location.hostname.includes('localhost');
+      
       if (!storedToken) {
-        storedToken = localStorage.getItem(TOKEN_KEY);
-        storedExpiry = localStorage.getItem(EXPIRY_KEY);
+        if (isLocalhost) {
+          storedToken = localStorage.getItem(TOKEN_KEY);
+          storedExpiry = localStorage.getItem(EXPIRY_KEY);
+        } else {
+          if (localStorage.getItem(TOKEN_KEY)) {
+            localStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem(EXPIRY_KEY);
+          }
+        }
       }
       
       if (storedToken && storedExpiry) {
