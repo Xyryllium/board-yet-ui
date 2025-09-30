@@ -43,10 +43,6 @@ export default function EmailInvitation({params}: Route.ComponentProps) {
         if (updatedUser && updatedUser.subdomain) {
           const { redirectToUserOrganization } = await import('~/lib/tenancy');
           redirectToUserOrganization(updatedUser.subdomain, '/tenant/boards');
-        } else if (updatedUser && updatedUser.organization_id) {
-          const { redirectToUserOrganization } = await import('~/lib/tenancy');
-          const generatedSubdomain = `org-${updatedUser.organization_id}`;
-          redirectToUserOrganization(generatedSubdomain, '/tenant/boards');
         } else {
           setError('Unable to determine organization. Please try logging in again.');
         }

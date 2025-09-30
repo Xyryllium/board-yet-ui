@@ -16,13 +16,12 @@ export function useOrganizationRedirect() {
       return;
     }
 
-    if (!userData?.organization_id) {
+    if (!userData?.subdomain) {
       return;
     }
 
     const currentPath = window.location.pathname;
-    const expectedSubdomain = `org-${userData.organization_id}`;
 
-    redirectToOrganization(expectedSubdomain, currentPath);
+    redirectToOrganization(userData.subdomain, currentPath);
   }, [userData, isLoading]);
 }
