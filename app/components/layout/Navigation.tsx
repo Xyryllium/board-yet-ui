@@ -6,7 +6,7 @@ import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Navigation() {
   const navigate = useNavigate();
-  const { user: userData, isLoading } = useUser();
+  const { user: userData, isLoading, refreshUser } = useUser();
   const tenantSlug = getTenantFromHostname();
   const isTenantSubdomain = tenantSlug && !isMainDomain();
 
@@ -16,13 +16,11 @@ export function Navigation() {
   const handleLogout = async () => {
     try {
       await logoutUser();
-      if (isTenantSubdomain) {
-        const isLocalhost = window.location.hostname.includes('localhost');
-        const mainDomain = isLocalhost ? 'http://localhost:5173' : 'https://boardyet.com';
-        window.location.href = mainDomain;
-      } else {
-        navigate('/');
-      }
+      await refreshUser();
+
+      const isLocalhost = window.location.hostname.includes('localhost');
+      const mainDomain = isLocalhost ? 'http://localhost:5173' : 'https://boardyet.com';
+      window.location.href = mainDomain;
     } catch (error) {
       console.error('Logout failed:', error);
     }
