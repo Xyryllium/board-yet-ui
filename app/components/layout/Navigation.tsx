@@ -18,8 +18,6 @@ export function Navigation() {
       await logoutUser();
       await refreshUser();
 
-      await new Promise(resolve => setTimeout(resolve, 100));
-
       const isLocalhost = window.location.hostname.includes('localhost');
       const mainDomain = isLocalhost ? 'http://localhost:5173' : 'https://boardyet.com';
       window.location.href = mainDomain;
