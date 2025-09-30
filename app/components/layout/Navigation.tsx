@@ -17,7 +17,9 @@ export function Navigation() {
     try {
       await logoutUser();
       if (isTenantSubdomain) {
-        window.location.href = '/';
+        const isLocalhost = window.location.hostname.includes('localhost');
+        const mainDomain = isLocalhost ? 'http://localhost:5173' : 'https://boardyet.com';
+        window.location.href = mainDomain;
       } else {
         navigate('/');
       }
