@@ -7,6 +7,7 @@ export default [
 
   route("forgot-password", "routes/forgot-password.tsx"),
   route("reset-password", "routes/reset-password.tsx"),
+  route("email/verify/:id/:hash", "routes/email-verify.tsx"),
   route("member", "routes/member.tsx"),
   route("invitation", "routes/invitation.tsx"),
 

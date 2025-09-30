@@ -26,6 +26,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  email_verified?: boolean;
   role?: string;
   organization_id?: number;
   subdomain?: string;
@@ -49,6 +50,8 @@ import { logoutUser as apiLogoutUser } from '../api/auth/logout';
 import { getCurrentUser as apiGetCurrentUser } from '../api/auth/me';
 import { forgotPassword as apiForgotPassword } from '../api/auth/forgotPassword';
 import { resetPassword as apiResetPassword } from '../api/auth/resetPassword';
+import { resendVerificationEmail as apiResendVerificationEmail } from '../api/email/resend';
+import { verifyEmail as apiVerifyEmail } from '../api/email/verify';
 
 export async function loginUser(credentials: LoginCredentials): Promise<AuthResponse> {
   const result = await apiLoginUser(credentials);
@@ -257,4 +260,12 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 
   return await apiGetCurrentUser();
+}
+
+export async function resendVerificationEmail(): Promise<AuthResponse> {
+  return await apiResendVerificationEmail();
+}
+
+export async function verifyEmail(id: string, hash: string): Promise<AuthResponse> {
+  return await apiVerifyEmail(id, hash);
 }

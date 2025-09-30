@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { getAuthToken } from "../lib/auth";
 import { useUser } from "../contexts/UserContext";
-import { AuthRequired } from "../components/auth";
+import { AuthRequired, EmailVerificationPrompt } from "../components/auth";
 import { DashboardHeader } from "~/components/dashboard/DashboardHeader";
 import { MemberInviteForm } from "~/components/dashboard/MemberInviteForm";
 import { fetchAllMembers, inviteMember} from "~/lib/member";
@@ -166,6 +166,8 @@ export default function OrganizationDashboard() {
       )}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-4xl mx-auto">
+          <EmailVerificationPrompt />
+          
           <DashboardHeader 
             title="Organization Dashboard"
             description="Manage your organization and invite members"

@@ -171,6 +171,10 @@ export const API_ENDPOINTS = {
     FORGOT_PASSWORD: '/forgot-password',
     RESET_PASSWORD: '/reset-password',
   },
+  EMAIL: {
+    RESEND: '/email/resend',
+    VERIFY: '/email/verify',
+  },
   ORGANIZATION: {
     CREATE: '/organizations',
     GET_BY_SUBDOMAIN: '/organizations/subdomain/details/{subdomain}',
