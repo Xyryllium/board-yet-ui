@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, useParams } from 'react-router';
-import { resendVerificationEmail, verifyEmail } from '../../lib/auth';
+import { resendVerificationEmail, verifyEmail, getCurrentUser } from '../../lib/auth';
 import { useUser } from '../../contexts/UserContext';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { ErrorAlert } from '../ui/ErrorAlert';
@@ -15,6 +15,7 @@ export function EmailVerificationPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isVerified, setIsVerified] = useState(false);
+  const [verifiedUser, setVerifiedUser] = useState<any>(null);
 
   const id = params.id || searchParams.get('id');
   const hash = params.hash || searchParams.get('hash');
@@ -38,16 +39,20 @@ export function EmailVerificationPage() {
         setMessage('Email verified successfully!');
         setIsVerified(true);
         
+        let updatedUser = null;
         try {
           await refreshUser();
+          updatedUser = await getCurrentUser();
+          setVerifiedUser(updatedUser);
         } catch (err) {
           console.log('User not logged in, verification still successful');
         }
         
-        setTimeout(() => {
-          if (user?.subdomain) {
-            const path = user.role === 'admin' ? '/tenant/' : '/tenant/boards';
-            window.location.href = `https://${user.subdomain}.boardyet.com${path}`;
+        setTimeout(async () => {
+          if (updatedUser && updatedUser.subdomain) {
+            const { redirectToUserOrganization } = await import('../../lib/tenancy');
+            const path = updatedUser.role === 'admin' ? '/tenant/' : '/tenant/boards';
+            redirectToUserOrganization(updatedUser.subdomain, path);
           } else {
             navigate('/');
           }
@@ -142,7 +147,7 @@ export function EmailVerificationPage() {
                   {message || 'Your email has been successfully verified.'}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-500">
-                  {user?.subdomain ? 'Redirecting to dashboard...' : 'Redirecting to login...'}
+                  {verifiedUser?.subdomain ? 'Redirecting to dashboard...' : 'Redirecting to login...'}
                 </p>
               </div>
             ) : (

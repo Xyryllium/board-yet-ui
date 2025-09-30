@@ -5,6 +5,7 @@ export interface User {
   email_verified?: boolean;
   role?: string;
   organization_id?: number;
+  subdomain?: string;
 }
 
 export interface AuthResponse {
